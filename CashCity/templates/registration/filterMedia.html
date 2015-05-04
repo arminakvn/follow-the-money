@@ -1,48 +1,92 @@
 {% load cropping %}
 {% load widget_tweaks %}
 
-<div class='filter-container'>	
-    <label for="type"><b>Type:</b></label>
-    <select id="type" name="type">
-        {%  if toolbar.searchType == 'All' %}
-            <option value="All" selected>All</option>
-            <option value="Images">Images</option>
-            <option value="Audio">Audio</option>
-            <option value="Notes">Notes</option>
-            <option value="Interviews">Interviews</option>
-        {% elif toolbar.searchType == 'Images' %}
-            <option value="All">All</option>
-            <option value="Images" selected>Images</option>
-            <option value="Audio">Audio</option>
-            <option value="Notes">Notes</option>
-            <option value="Interviews">Interviews</option>
-        {% elif toolbar.searchType == 'Audio' %}
-            <option value="All">All</option>
-            <option value="Images">Images</option>
-            <option value="Audio" selected>Audio</option>
-            <option value="Notes">Notes</option>
-            <option value="Interviews">Interviews</option>
-        {% elif toolbar.searchType == 'Notes' %}
-            <option value="All">All</option>
-            <option value="Images">Images</option>
-            <option value="Audio">Audio</option>
-            <option value="Notes" selected>Notes</option>
-            <option value="Interviews">Interviews</option>
-        {% elif toolbar.searchType == 'Interviews' %}
-            <option value="All">All</option>
-            <option value="Images">Images</option>
-            <option value="Audio">Audio</option>
-            <option value="Notes" >Notes</option>
-            <option value="Interviews" selected>Interviews</option>
+<div class='container-fluid media_search_header'>	
+  <div class="row">
+    <div class='col-xs-12 col-sm-6 col-md-3 col-lg-3 filter-container'> 
+      <select id="type" name="type">
+          {%  if toolbar.searchType == 'All' %}
+              <option value="All" selected>All Media Types</option>
+              <option value="Images">Images</option>
+              <option value="Audio">Audio</option>
+              <option value="Notes">Notes</option>
+              <option value="Interviews">Interviews</option>
+          {% elif toolbar.searchType == 'Images' %}
+              <option value="All">All Media Types</option>
+              <option value="Images" selected>Images</option>
+              <option value="Audio">Audio</option>
+              <option value="Notes">Notes</option>
+              <option value="Interviews">Interviews</option>
+          {% elif toolbar.searchType == 'Audio' %}
+              <option value="All">All Media Types</option>
+              <option value="Images">Images</option>
+              <option value="Audio" selected>Audio</option>
+              <option value="Notes">Notes</option>
+              <option value="Interviews">Interviews</option>
+          {% elif toolbar.searchType == 'Notes' %}
+              <option value="All">All Media Types</option>
+              <option value="Images">Images</option>
+              <option value="Audio">Audio</option>
+              <option value="Notes" selected>Notes</option>
+              <option value="Interviews">Interviews</option>
+          {% elif toolbar.searchType == 'Interviews' %}
+              <option value="All">All Media Types</option>
+              <option value="Images">Images</option>
+              <option value="Audio">Audio</option>
+              <option value="Notes" >Notes</option>
+              <option value="Interviews" selected>Interviews</option>
+          {% else %}
+              <option value="All" selected>All Media Types</option>
+              <option value="Images">Images</option>
+              <option value="Audio">Audio</option>
+              <option value="Notes">Notes</option>
+              <option value="Interviews">Interviews</option>
+          {% endif %}
+      </select>
+    </div>
+    <div class='col-xs-12 col-sm-6 col-md-3 col-lg-3 filter-container'> 
+      <select id="class" name="class">
+        {%  if toolbar.searchClass == 'All' %}
+            <option value="All" selected>All Classes</option>
         {% else %}
-            <option value="All" selected>All</option>
-            <option value="Images">Images</option>
-            <option value="Audio">Audio</option>
-            <option value="Notes">Notes</option>
-            <option value="Interviews">Interviews</option>
+            <option value="All">All Classes</option>
         {% endif %}
-    </select>
+        {% for class in classes %}
+            {% if toolbar.searchClass == class.teacherId|stringformat:"s_"|add:class.section %}
+                <option value="{{ class.teacherId }}_{{ class.section }}" selected>{{ class.teacherName }} - Section {{ class.section }}</option>
+            {% else %}
+                <option value="{{ class.teacherId }}_{{ class.section }}">{{ class.teacherName }} - Section {{ class.section }} </option>
+            {% endif %}
+        {% endfor %}
+      </select>
+    </div>
+    <div class='col-xs-12 col-sm-6 col-md-3 col-lg-3 filter-container'> 
+      <select id="team" name="team">
+          {%  if toolbar.searchTeam == 'All' %}
+              <option value="All" selected>All Teams</option>
+          {% else %}
+              <option value="All">All Teams</option>
+          {% endif %}
+          {% for team in teams %}
+              {% if toolbar.searchTeam == team %}
+                  <option value="{{ team }}" selected>{{ team|title }}</option>
+              {% else %}
+                  <option value="{{ team }}">{{ team|title }}</option>
+              {% endif %}
+          {% endfor %}
+      </select>
+    </div>
+    <div class='col-xs-12 col-sm-6 col-md-3 col-lg-3 filter-container'> 
+      <form class="form-inline">
+        <div class="form-group has-feedback">
+          {{ form.tags|attr:"id:tags" }}
+          <span class="glyphicon glyphicon-search form-control-feedback"></span>
+        </div>
+      </form>
+    </div>
+  </div>
 </div>
+<!-- 
 <div class='filter-container'>
     <label for="class"><b>Class:</b></label>
     <select id="class" name="class">
@@ -84,38 +128,50 @@
 	    <span class="glyphicon glyphicon-search form-control-feedback"></span>
 	  </div>
 	</form>
-</div>
+</div> -->
 
 
 {% if mediaResults %}
-<table class="table">
+<table class="table table-condensed table-responsive table-striped media-table-custom">
+	<thead>
+		<th class="hidden-xs">Section</th>
+		<th class="hidden-xs">Team Color</th>
+		<th>Media</th>
+		<th>Privacy<span class="hidden-xs">/Visibility</span></th>
+		<th>Name</th>
+		<th>Date Added</th>
+		<th>Options</th>
+	</thead>
 	<tbody>
 		{% for mediaResult in mediaResults %}
 			{% if mediaResult.image and mediaResult.audio %}
 				<tr>
-					<td>{{ mediaResult.getUserProfile.section }}</td>
-					<td><div class="interview_{{ mediaResult.getUserProfile.color }} pull-left margin-right"></div></td>
+					<td class="hidden-xs">{{ mediaResult.getUserProfile.section }}</td>
+					<td class="hidden-xs"><div class="interview_{{ mediaResult.getUserProfile.color }} pull-left margin-right"></div></td>
 					<td>
 						{% if mediaResult.published %}
 							<a href="/cashcity/media/interview/{{ mediaResult.id }}/" style="text-decoration:none; color:inherit">
-								<div style="height: 241px; width: 280px; margin-bottom: 5px; overflow: hidden;">
 					            	<img src="{% cropped_thumbnail mediaResult 'cropped_image' %}">
-					            </div>
 							</a>
 						{% else %}
 							<a href="/cashcity/media/form/edit/interview/{{ mediaResult.id }}/" style="text-decoration:none; color:inherit">
-								<div style="height: 241px; width: 280px; margin-bottom: 5px; overflow: hidden;">
 					            	<img src="{% cropped_thumbnail mediaResult 'cropped_image' %}">
-					            </div>
 							</a>
 						{% endif %}
 				            <div style="margin: auto;">
-								{% if ".amr" in mediaResult.audio.path %}
+								{% if ".amr" in mediaResult.audio.path or ".mov" in mediaResult.audio.path or ".MOV" in mediaResult.audio.path or ".gp3" in mediaResult.audio.path or ".mp4" in mediaResult.audio.path %}
 					            	<audio src="/media/CashCity/{{ mediaResult.audio }}.mp3" preload="auto" controls></audio>
 								{% else %}
 					            	<audio src="/media/CashCity/{{ mediaResult.audio }}" preload="auto" controls></audio>
 								{% endif %}
 				            </div>
+					</td>
+					<td>
+						{% if mediaResult.shared %}
+							All<span class="hidden-xs"> My Teams</span> <input type="checkbox" class="interviewShare" value="{{ mediaResult.id }}" checked>
+						{% else %}
+							All<span class="hidden-xs"> My Teams</span> <input type="checkbox" class="interviewShare" value="{{ mediaResult.id }}" >
+						{% endif %}						
 					</td>
 					<td>
 						{% if mediaResult.published %}
@@ -143,22 +199,25 @@
 				</tr>
 			{% elif mediaResult.image %}
 				<tr>
-					<td>{{ mediaResult.getUserProfile.section }}</td>
-					<td><div class="image_{{ mediaResult.getUserProfile.color }} pull-left margin-right"></div></td>
+					<td class="hidden-xs">{{ mediaResult.getUserProfile.section }}</td>
+					<td class="hidden-xs"><div class="image_{{ mediaResult.getUserProfile.color }} pull-left margin-right"></div></td>
 					<td>
 						{% if mediaResult.published %}
 							<a href="/cashcity/media/image/{{ mediaResult.id }}/" style="text-decoration:none; color:inherit">
-								<div style="height: 280px; width: 280px; margin-bottom: 5px; overflow: hidden;">
 					            	<img src="{% cropped_thumbnail mediaResult 'cropped_image' %}">
-					            </div>
 							</a>
 						{% else %}
 							<a href="/cashcity/media/form/edit/image/{{ mediaResult.id }}/" style="text-decoration:none; color:inherit">
-								<div style="height: 280px; width: 280px; margin-bottom: 5px; overflow: hidden;">
 					            	<img src="{% cropped_thumbnail mediaResult 'cropped_image' %}">
-					            </div>
 							</a>
 						{% endif %}
+					</td>
+					<td>
+						{% if mediaResult.shared %}
+							All<span class="hidden-xs"> My Teams</span> <input type="checkbox" class="imageShare" value="{{ mediaResult.id }}" checked>
+						{% else %}
+							All<span class="hidden-xs"> My Teams</span> <input type="checkbox" class="imageShare" value="{{ mediaResult.id }}" >
+						{% endif %}						
 					</td>
 					<td>
 						{% if mediaResult.published %}
@@ -186,16 +245,23 @@
 				</tr>
 			{% elif mediaResult.audio %}
 				<tr>
-					<td>{{ mediaResult.getUserProfile.section }}</td>
-					<td><div class="audio_{{ mediaResult.getUserProfile.color }} pull-left margin-right"></div></td>
+					<td class="hidden-xs">{{ mediaResult.getUserProfile.section }}</td>
+					<td class="hidden-xs"><div class="audio_{{ mediaResult.getUserProfile.color }} pull-left margin-right"></div></td>
 					<td>
 				            <div style="margin: auto;">
-								{% if ".amr" in mediaResult.audio.path %}
+								{% if ".amr" in mediaResult.audio.path or ".mov" in mediaResult.audio.path or ".MOV" in mediaResult.audio.path or ".gp3" in mediaResult.audio.path or ".mp4" in mediaResult.audio.path %}
 					            	<audio src="/media/CashCity/{{ mediaResult.audio }}.mp3" preload="auto" controls></audio>
 								{% else %}
 					            	<audio src="/media/CashCity/{{ mediaResult.audio }}" preload="auto" controls></audio>
 								{% endif %}
 				            </div>
+					</td>
+					<td>
+						{% if mediaResult.shared %}
+							All<span class="hidden-xs"> My Teams</span> <input type="checkbox" class="audioShare" value="{{ mediaResult.id }}" checked>
+						{% else %}
+							All<span class="hidden-xs"> My Teams</span> <input type="checkbox" class="audioShare" value="{{ mediaResult.id }}" >
+						{% endif %}						
 					</td>
 					<td>
 						{% if mediaResult.published %}
@@ -223,9 +289,16 @@
 				</tr>
 			{% else %}
 				<tr>
-					<td>{{ mediaResult.getUserProfile.section }}</td>
-					<td><div class="note_{{ mediaResult.getUserProfile.color }} pull-left margin-right"></div></td>
+					<td class="hidden-xs">{{ mediaResult.getUserProfile.section }}</td>
+					<td class="hidden-xs"><div class="note_{{ mediaResult.getUserProfile.color }} pull-left margin-right"></div></td>
 					<td></td>
+					<td>
+						{% if mediaResult.shared %}
+							All<span class="hidden-xs"> My Teams</span> <input type="checkbox" class="noteShare" value="{{ mediaResult.id }}" checked>
+						{% else %}
+							All<span class="hidden-xs"> My Teams</span> <input type="checkbox" class="noteShare" value="{{ mediaResult.id }}" >
+						{% endif %}							
+					</td>
 					<td>
 						{% if mediaResult.published %}
 							<a href="/cashcity/media/note/{{ mediaResult.id }}/" style="text-decoration:none; color:inherit">

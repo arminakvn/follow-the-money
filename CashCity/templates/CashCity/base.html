@@ -14,6 +14,7 @@
 	{% block css_block %}
 	{% endblock %}
 	<link rel="stylesheet" type="text/css" href="{% static 'CashCity/css/main.css' %}">
+	<link rel="stylesheet" type="text/css" href="{% static 'CashCity/css/extra.css' %}">
 	<style type="text/css">
 	
 		/*
@@ -79,6 +80,19 @@
     ================================================== -->
     <!-- Only jquery goes here to load autocomplete on forms-->	
 	<script type="text/javascript" src="{% static 'CashCity/js/jquery-1.11.1.min.js' %}"></script>
+	<script type="text/javascript">
+	WebFontConfig = { fontdeck: { id: '35051' } };
+
+	(function() {
+	  var wf = document.createElement('script');
+	  wf.src = ('https:' == document.location.protocol ? 'https' : 'http') +
+	  '://ajax.googleapis.com/ajax/libs/webfont/1/webfont.js';
+	  wf.type = 'text/javascript';
+	  wf.async = 'true';
+	  var s = document.getElementsByTagName('script')[0];
+	  s.parentNode.insertBefore(wf, s);
+	})();
+	</script>
 	{% block head_js_block %}
 	{% endblock %}
 		
@@ -98,25 +112,34 @@
 	      </button>
 	    </div>
 		<div class="navbar-center navbar-brand">
-		  <a class="navbar-brand" href="{% url 'index' %}">City Digits:</a><span class="brand-fade">Cash City</span>
+		  <a class="navbar-brand citydigits-font" href="{% url 'index' %}"><span class="hidden-sm" style="margin-right:10px;">City Digits:</span><span class="brand-fade">Cash City</span></a>
 		</div>
 
 	    <!-- Collect the nav links, forms, and other content for toggling -->
 	    <div class="collapse navbar-collapse" id="ftm-navbar-collapse">
 	      <ul class="nav navbar-nav">
-	        <li id='navMapTab'><a href="{% url 'index' %}">MAP</a></li>
+            <li class="showMobile"><a href="{% url 'mediaFormImage' %}">ADD IMAGE</a></li>
+            <li class="showMobile"><a href="{% url 'mediaFormAudio' %}">ADD AUDIO</a></li>
+            <li class="showMobile"><a href="{% url 'mediaFormNote' %}">ADD NOTE</a></li>
+            <li class="showMobile"><a href="{% url 'mediaFormInterview' %}">ADD INTERVIEW</a></li>
+            <li id='navMapTab'><a href="{% url 'index' %}">MAP</a></li>
 	        <li><a href="{% url 'media' %}">MEDIA</a></li>
 	        <li><a href="{% url 'opinion' %}">OPINIONS</a></li>
 	        <li><a href="{% url 'about' %}">ABOUT</a></li>
-			<li><a href="{% url 'accountProfile' %}">MY ACCOUNT</a></li>
-			
+	        {% if user.is_authenticated %}
+		        <li class="showMobile"><a href="{% url 'accountProfile' %}">MY ACCOUNT</a></li>
+		        <li class="showMobile"><a href="{% url 'auth_logout' %}">LOGOUT</a></li>
+	        {% else %}
+		        <li class="showMobile"><a href="{% url 'auth_login' %}">LOGIN</a></li>
+	        {% endif %}
 		  </ul>
-	      <ul class="nav navbar-nav navbar-right">
+	      <ul class="nav navbar-nav navbar-right citydigits-navbar-right">
 			  {% if user.is_authenticated %}
 			  	{% if profile.teacherOrStudent %}
 				<div class="dropdown pull-left">
 			  		<li><a href="#" class="dropdown-toggle" data-toggle="dropdown" style="text-decoration: none;"><div class="teacher-icon pull-left"></div><p class="user-text pull-right">{{ user.username }} </p></a>
 					  <ul class="dropdown-menu" role="menu">
+  			            <li><a href="{% url 'accountProfile' %}"><span class="glyphicon glyphicon-user"></span> My Account</a></li>
 			            <li><a href="{% url 'auth_logout' %}"><span class="glyphicon glyphicon-log-out"></span> Logout</a></li>
 					  </ul>					
 					</li>
@@ -125,12 +148,14 @@
 				<div class="dropdown pull-left">
 			  		<li><a href="#" class="dropdown-toggle" data-toggle="dropdown" style="text-decoration: none;"><div class="student-icon pull-left"></div><p class="user-text pull-right">{{ user.username }} </p></a>
 					  <ul class="dropdown-menu" role="menu">
+			            <li><a href="{% url 'accountProfile' %}"><span class="glyphicon glyphicon-user"></span> My Account</a></li>
 			            <li><a href="{% url 'auth_logout' %}"><span class="glyphicon glyphicon-log-out"></span> Logout</a></li>
 					  </ul>					
 					</li>
 				</div>
 				{% endif %}	  
 			  {% else %}
+			  <li><a href="{% url 'accountProfile' %}">LOG IN</a></li>
 			  {% endif %}
 			  <li class="dropdown media-button">
 			  	<a href="#" class="dropdown-toggle" data-toggle="dropdown"></a>
@@ -177,9 +202,11 @@
 	{% block js_block %}
 	{% endblock %}
 	
-	
 	<!-- ajax loading page modal -->
 	<div class="loading-modal"></div>
+
+	{% block modal_block %}
+	{% endblock %}
 	
   </body>
 </html>

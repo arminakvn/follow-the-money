@@ -3,13 +3,23 @@
 */
 
 function CityDigitsMapOpinion(id, lat, lon, zoom) {
+    //initial values
+    this.neighborhoodLayer = null;
+	this.markerLayer = null;
+	var topojsonLayer = null;
 	
     //set base Mapbox tiles
     var basemap = "sw2279.NYCLotto";
 
     //where brooklyn at?!40.7429 N, 73.9188
     this.map = L.mapbox.map('map_'+id, basemap,{minZoom:10,maxZoom:17}).setView([lat,lon], zoom);
-	
+
+    //load chart-icon
+    $("#citydigits-charts"+id).attr({'class':'citydigits-charts'});
+
+	//load legend
+	$("#citydigits-legend"+id).attr({'class':'citydigits-legend'});
+
     //disable unwanted events
     this.map.doubleClickZoom.enable();
     this.map.scrollWheelZoom.enable();
@@ -45,18 +55,36 @@ function CityDigitsMapOpinion(id, lat, lon, zoom) {
 	// popup containers to catch popups
 	this.popup = new L.Popup({ 
 		autoPan: false, 
-		maxWidth: 350, 
+		maxWidth: 200, 
 		minWidth: 110, 
 		minHeight: 50,
 		closeButton: false 
 	});
 	
 	this.popup2 = new L.Popup({ 
-		maxWidth: 300,
-		minWidth: 200, 
+		maxWidth: 200,
+		minWidth: 100, 
 		minHeight: 30, 
 		closeButton:true
 	});
+
+	this.popup3 = new L.Popup({ 
+		maxWidth: 200,
+		minWidth: 100, 
+		minHeight: 30, 
+		closeButton:true
+	});
+
+	// locate and continue to watch location
+	var map = this.map;
+	this.map.on('locationfound', onLocationFound);
+	function onLocationFound(e) {
+		var radius = e.accuracy / 2;
+	    L.circle(e.latlng, radius).addTo(map);
+	}
+
+	this.map.locate({watch: true});
+
 	
 }
 
@@ -86,7 +114,7 @@ CityDigitsMapOpinion.prototype.loadLayers = function (){
 		    layer.on('mouseover', function(ev) {
 				// only have on mouseover work if popup2 isn't open
 		
-				if (!activeMap.popup2._isOpen) {
+				if (!activeMap.map.hasLayer(activeMap.popup2)) {
 			    	activeMap.popup.setLatLng(activeMap.map.layerPointToLatLng(ev.layerPoint));
 					activeMap.popup.setContent('<div class="rollover-tooltip text-capitalize">'+feature.properties.Name + '</div>');
 		
@@ -106,7 +134,7 @@ CityDigitsMapOpinion.prototype.loadLayers = function (){
 		    layer.on('mousemove', function(ev) {
 		
 				// only have on mousemove work if popup2 isn't open
-				if (!activeMap.popup2._isOpen) {
+				if (!activeMap.map.hasLayer(activeMap.popup2)) {
 			        //get lat/long
 			        if(($.inArray(feature.properties.Name,open_tooltips)<0)){
 						activeMap.popup.setLatLng(activeMap.map.layerPointToLatLng(ev.layerPoint));
@@ -129,13 +157,21 @@ CityDigitsMapOpinion.prototype.loadLayers = function (){
 			layer.on("click",function(ev){
 				// close all open popups
 				activeMap.map.closePopup();
+
+				// add popups as layers
+				var thisPopup;
+				if (activeMap.map.hasLayer(activeMap.popup2)) {
+					thisPopup = activeMap.popup3;
+				} else {
+					thisPopup = activeMap.popup2;
+				}
 		
 				// bind popup with data to the feature
-				activeMap.popup2.setLatLng(activeMap.map.layerPointToLatLng(ev.layerPoint));
+				thisPopup.setLatLng(activeMap.map.layerPointToLatLng(ev.layerPoint));
 				var percent = feature.properties.PovertyPer * 100;
 				percent = percent.toFixed(0);
-				activeMap.popup2.setContent('<div class="map-popup"><h4 class="text-left">' + feature.properties.Name + '</h4><p>' + percent + '%<br />Population in Poverty</p></div>');
-				activeMap.popup2.openOn(activeMap.map);
+				thisPopup.setContent('<div class="map-popup"><h4 class="text-left">' + feature.properties.Name + '</h4><p>' + percent + '%<br />Population in Poverty</p></div>');
+				activeMap.map.addLayer(thisPopup);
 			});
 	
 		}
@@ -155,7 +191,7 @@ CityDigitsMapOpinion.prototype.loadLayers = function (){
 		    //add on hover -- same on hover and mousemove for each layer
 		    layer.on('mouseover', function(ev) {
 				// only have on mouseover work if popup2 isn't open
-				if (!activeMap.popup2._isOpen) {
+				if (!activeMap.map.hasLayer(activeMap.popup2)) {
 			    	activeMap.popup.setLatLng(activeMap.map.layerPointToLatLng(ev.layerPoint));
 					activeMap.popup.setContent('<div class="rollover-tooltip text-capitalize">'+feature.properties.Name + '</div>');
 		
@@ -175,7 +211,7 @@ CityDigitsMapOpinion.prototype.loadLayers = function (){
 		    layer.on('mousemove', function(ev) {
 		
 				// only have on mousemove work if popup2 isn't open
-				if (!activeMap.popup2._isOpen) {
+				if (!activeMap.map.hasLayer(activeMap.popup2)) {
 			        //get lat/long
 			        if(($.inArray(feature.properties.Name,open_tooltips)<0)){
 						activeMap.popup.setLatLng(activeMap.map.layerPointToLatLng(ev.layerPoint));
@@ -198,12 +234,20 @@ CityDigitsMapOpinion.prototype.loadLayers = function (){
 			layer.on("click",function(ev){
 				// close all open popups
 				activeMap.map.closePopup();
+
+				// add popups as layers
+				var thisPopup;
+				if (activeMap.map.hasLayer(activeMap.popup2)) {
+					thisPopup = activeMap.popup3;
+				} else {
+					thisPopup = activeMap.popup2;
+				}
 		
 				// bind popup with data to the feature
-				activeMap.popup2.setLatLng(activeMap.map.layerPointToLatLng(ev.layerPoint));
+				thisPopup.setLatLng(activeMap.map.layerPointToLatLng(ev.layerPoint));
 				var MedHHInc = accounting.formatMoney(feature.properties.MedHouInco, "$", 0, ",", "");
-				activeMap.popup2.setContent('<div class="map-popup"><h4 class="text-left">' + feature.properties.Name + '</h4><p>' + MedHHInc + '<br />Median Household Income</p></div>');
-				activeMap.popup2.openOn(activeMap.map);
+				thisPopup.setContent('<div class="map-popup"><h4 class="text-left">' + feature.properties.Name + '</h4><p>' + MedHHInc + '<br />Median Household Income</p></div>');
+				activeMap.map.addLayer(thisPopup);
 			});
 	
 		}
@@ -223,7 +267,7 @@ CityDigitsMapOpinion.prototype.loadLayers = function (){
 		    //add on hover -- same on hover and mousemove for each layer
 		    layer.on('mouseover', function(ev) {
 				// only have on mouseover work if popup2 isn't open
-				if (!activeMap.popup2._isOpen) {
+				if (!activeMap.map.hasLayer(activeMap.popup2)) {
 			    	activeMap.popup.setLatLng(activeMap.map.layerPointToLatLng(ev.layerPoint));
 					activeMap.popup.setContent('<div class="rollover-tooltip text-capitalize">'+feature.properties.Name + '</div>');
 		
@@ -243,7 +287,7 @@ CityDigitsMapOpinion.prototype.loadLayers = function (){
 		    layer.on('mousemove', function(ev) {
 		
 				// only have on mousemove work if popup2 isn't open
-				if (!activeMap.popup2._isOpen) {
+				if (!activeMap.map.hasLayer(activeMap.popup2)) {
 			        //get lat/long
 			        if(($.inArray(feature.properties.Name,open_tooltips)<0)){
 						activeMap.popup.setLatLng(activeMap.map.layerPointToLatLng(ev.layerPoint));
@@ -266,13 +310,21 @@ CityDigitsMapOpinion.prototype.loadLayers = function (){
 			layer.on("click",function(ev){
 				// close all open popups
 				activeMap.map.closePopup();
+
+				// add popups as layers
+				var thisPopup;
+				if (activeMap.map.hasLayer(activeMap.popup2)) {
+					thisPopup = activeMap.popup3;
+				} else {
+					thisPopup = activeMap.popup2;
+				}
 		
 				// bind popup with data to the feature
-				activeMap.popup2.setLatLng(activeMap.map.layerPointToLatLng(ev.layerPoint));
+				thisPopup.setLatLng(activeMap.map.layerPointToLatLng(ev.layerPoint));
 				var percent = feature.properties.UnempRate * 100;
 				percent = percent.toFixed(1);
-				activeMap.popup2.setContent('<div class="map-popup"><h4 class="text-left">' + feature.properties.Name + '</h4><p>' + percent + '%<br />Percent Unemployed</p></div>');
-				activeMap.popup2.openOn(activeMap.map);
+				thisPopup.setContent('<div class="map-popup"><h4 class="text-left">' + feature.properties.Name + '</h4><p>' + percent + '%<br />Percent Unemployed</p></div>');
+				activeMap.map.addLayer(thisPopup);
 			});
 	
 		}
@@ -292,7 +344,7 @@ CityDigitsMapOpinion.prototype.loadLayers = function (){
 		    //add on hover -- same on hover and mousemove for each layer
 		    layer.on('mouseover', function(ev) {
 				// only have on mouseover work if popup2 isn't open
-				if (!activeMap.popup2._isOpen) {
+				if (!activeMap.map.hasLayer(activeMap.popup2)) {
 			    	activeMap.popup.setLatLng(activeMap.map.layerPointToLatLng(ev.layerPoint));
 					activeMap.popup.setContent('<div class="rollover-tooltip text-capitalize">'+feature.properties.Name + '</div>');
 		
@@ -312,7 +364,7 @@ CityDigitsMapOpinion.prototype.loadLayers = function (){
 		    layer.on('mousemove', function(ev) {
 		
 				// only have on mousemove work if popup2 isn't open
-				if (!activeMap.popup2._isOpen) {
+				if (!activeMap.map.hasLayer(activeMap.popup2)) {
 			        //get lat/long
 			        if(($.inArray(feature.properties.Name,open_tooltips)<0)){
 						activeMap.popup.setLatLng(activeMap.map.layerPointToLatLng(ev.layerPoint));
@@ -335,13 +387,21 @@ CityDigitsMapOpinion.prototype.loadLayers = function (){
 			layer.on("click",function(ev){
 				// close all open popups
 				activeMap.map.closePopup();
+
+				// add popups as layers
+				var thisPopup;
+				if (activeMap.map.hasLayer(activeMap.popup2)) {
+					thisPopup = activeMap.popup3;
+				} else {
+					thisPopup = activeMap.popup2;
+				}
 		
 				// bind popup with data to the feature
-				activeMap.popup2.setLatLng(activeMap.map.layerPointToLatLng(ev.layerPoint));
+				thisPopup.setLatLng(activeMap.map.layerPointToLatLng(ev.layerPoint));
 				var percent = feature.properties.ForBornPer * 100;
 				percent = percent.toFixed(0);
-				activeMap.popup2.setContent('<div class="map-popup"><h4 class="text-left">' + feature.properties.Name + '</h4><p>' + percent + '%<br />Population Foreign Born</p></div>');
-				activeMap.popup2.openOn(activeMap.map);
+				thisPopup.setContent('<div class="map-popup"><h4 class="text-left">' + feature.properties.Name + '</h4><p>' + percent + '%<br />Population Foreign Born</p></div>');
+				activeMap.map.addLayer(thisPopup);
 			});
 	
 		}
@@ -379,7 +439,7 @@ CityDigitsMapOpinion.prototype.loadCreateMapLayers = function (){
 		    //add on hover -- same on hover and mousemove for each layer
 		    layer.on('mouseover', function(ev) {
 				// only have on mouseover work if popup2 isn't open
-				if (!activeMap.popup2._isOpen) {
+				if (!activeMap.map.hasLayer(activeMap.popup2)) {
 			    	activeMap.popup.setLatLng(activeMap.map.layerPointToLatLng(ev.layerPoint));
 					activeMap.popup.setContent('<div class="rollover-tooltip text-capitalize">'+feature.properties.Name + '</div>');
 		
@@ -399,7 +459,7 @@ CityDigitsMapOpinion.prototype.loadCreateMapLayers = function (){
 		    layer.on('mousemove', function(ev) {
 		
 				// only have on mousemove work if popup2 isn't open
-				if (!activeMap.popup2._isOpen) {
+				if (!activeMap.map.hasLayer(activeMap.popup2)) {
 			        //get lat/long
 			        if(($.inArray(feature.properties.Name,open_tooltips)<0)){
 						activeMap.popup.setLatLng(activeMap.map.layerPointToLatLng(ev.layerPoint));
@@ -422,9 +482,17 @@ CityDigitsMapOpinion.prototype.loadCreateMapLayers = function (){
 			layer.on("click",function(ev){
 				// close all open popups
 				activeMap.map.closePopup();
+
+				// add popups as layers
+				var thisPopup;
+				if (activeMap.map.hasLayer(activeMap.popup2)) {
+					thisPopup = activeMap.popup3;
+				} else {
+					thisPopup = activeMap.popup2;
+				}
 		
 				// bind popup with data to the feature
-				activeMap.popup2.setLatLng(activeMap.map.layerPointToLatLng(ev.layerPoint));
+				thisPopup.setLatLng(activeMap.map.layerPointToLatLng(ev.layerPoint));
 				// numerator
 				var Pawnshops = feature.properties.Pawnshops;
 				Pawnshops = Pawnshops.toFixed(0);
@@ -455,8 +523,8 @@ CityDigitsMapOpinion.prototype.loadCreateMapLayers = function (){
 				
 				var popupContent = header + pawnShopsText + checkCashText + moneyTransText + hr + sq_mileText + footer;
 		
-				activeMap.popup2.setContent(popupContent);
-				activeMap.popup2.openOn(activeMap.map);
+				thisPopup.setContent(popupContent);
+				activeMap.map.addLayer(thisPopup);
 			});
 	
 		}
@@ -476,7 +544,7 @@ CityDigitsMapOpinion.prototype.loadCreateMapLayers = function (){
 		    //add on hover -- same on hover and mousemove for each layer
 		    layer.on('mouseover', function(ev) {
 				// only have on mouseover work if popup2 isn't open
-				if (!activeMap.popup2._isOpen) {
+				if (!activeMap.map.hasLayer(activeMap.popup2)) {
 			    	activeMap.popup.setLatLng(activeMap.map.layerPointToLatLng(ev.layerPoint));
 					activeMap.popup.setContent('<div class="rollover-tooltip text-capitalize">'+feature.properties.Name + '</div>');
 		
@@ -496,7 +564,7 @@ CityDigitsMapOpinion.prototype.loadCreateMapLayers = function (){
 		    layer.on('mousemove', function(ev) {
 		
 				// only have on mousemove work if popup2 isn't open
-				if (!activeMap.popup2._isOpen) {
+				if (!activeMap.map.hasLayer(activeMap.popup2)) {
 			        //get lat/long
 			        if(($.inArray(feature.properties.Name,open_tooltips)<0)){
 						activeMap.popup.setLatLng(activeMap.map.layerPointToLatLng(ev.layerPoint));
@@ -519,9 +587,17 @@ CityDigitsMapOpinion.prototype.loadCreateMapLayers = function (){
 			layer.on("click",function(ev){
 				// close all open popups
 				activeMap.map.closePopup();
+
+				// add popups as layers
+				var thisPopup;
+				if (activeMap.map.hasLayer(activeMap.popup2)) {
+					thisPopup = activeMap.popup3;
+				} else {
+					thisPopup = activeMap.popup2;
+				}
 		
 				// bind popup with data to the feature
-				activeMap.popup2.setLatLng(activeMap.map.layerPointToLatLng(ev.layerPoint));
+				thisPopup.setLatLng(activeMap.map.layerPointToLatLng(ev.layerPoint));
 				// numerator
 				var Banks = feature.properties.Banks;
 				Banks = Banks.toFixed(0);
@@ -545,8 +621,8 @@ CityDigitsMapOpinion.prototype.loadCreateMapLayers = function (){
 				
 				var popupContent = header + banksText + hr + sq_mileText + footer;
 		
-				activeMap.popup2.setContent(popupContent);
-				activeMap.popup2.openOn(activeMap.map);
+				thisPopup.setContent(popupContent);
+				activeMap.map.addLayer(thisPopup);
 			});
 	
 		}
@@ -566,7 +642,7 @@ CityDigitsMapOpinion.prototype.loadCreateMapLayers = function (){
 		    //add on hover -- same on hover and mousemove for each layer
 		    layer.on('mouseover', function(ev) {
 				// only have on mouseover work if popup2 isn't open
-				if (!activeMap.popup2._isOpen) {
+				if (!activeMap.map.hasLayer(activeMap.popup2)) {
 			    	activeMap.popup.setLatLng(activeMap.map.layerPointToLatLng(ev.layerPoint));
 					activeMap.popup.setContent('<div class="rollover-tooltip text-capitalize">'+feature.properties.Name + '</div>');
 		
@@ -586,7 +662,7 @@ CityDigitsMapOpinion.prototype.loadCreateMapLayers = function (){
 		    layer.on('mousemove', function(ev) {
 		
 				// only have on mousemove work if popup2 isn't open
-				if (!activeMap.popup2._isOpen) {
+				if (!activeMap.map.hasLayer(activeMap.popup2)) {
 			        //get lat/long
 			        if(($.inArray(feature.properties.Name,open_tooltips)<0)){
 						activeMap.popup.setLatLng(activeMap.map.layerPointToLatLng(ev.layerPoint));
@@ -609,9 +685,17 @@ CityDigitsMapOpinion.prototype.loadCreateMapLayers = function (){
 			layer.on("click",function(ev){
 				// close all open popups
 				activeMap.map.closePopup();
+
+				// add popups as layers
+				var thisPopup;
+				if (activeMap.map.hasLayer(activeMap.popup2)) {
+					thisPopup = activeMap.popup3;
+				} else {
+					thisPopup = activeMap.popup2;
+				}
 		
 				// bind popup with data to the feature
-				activeMap.popup2.setLatLng(activeMap.map.layerPointToLatLng(ev.layerPoint));
+				thisPopup.setLatLng(activeMap.map.layerPointToLatLng(ev.layerPoint));
 				// numerator
 				var Pawnshops = feature.properties.Pawnshops;
 				Pawnshops = Pawnshops.toFixed(0);
@@ -635,8 +719,8 @@ CityDigitsMapOpinion.prototype.loadCreateMapLayers = function (){
 				
 				var popupContent = header + pawnShopsText + hr + sq_mileText + footer;
 		
-				activeMap.popup2.setContent(popupContent);
-				activeMap.popup2.openOn(activeMap.map);
+				thisPopup.setContent(popupContent);
+				activeMap.map.addLayer(thisPopup);
 			});
 	
 		}
@@ -656,7 +740,7 @@ CityDigitsMapOpinion.prototype.loadCreateMapLayers = function (){
 		    //add on hover -- same on hover and mousemove for each layer
 		    layer.on('mouseover', function(ev) {
 				// only have on mouseover work if popup2 isn't open
-				if (!activeMap.popup2._isOpen) {
+				if (!activeMap.map.hasLayer(activeMap.popup2)) {
 			    	activeMap.popup.setLatLng(activeMap.map.layerPointToLatLng(ev.layerPoint));
 					activeMap.popup.setContent('<div class="rollover-tooltip text-capitalize">'+feature.properties.Name + '</div>');
 		
@@ -676,7 +760,7 @@ CityDigitsMapOpinion.prototype.loadCreateMapLayers = function (){
 		    layer.on('mousemove', function(ev) {
 		
 				// only have on mousemove work if popup2 isn't open
-				if (!activeMap.popup2._isOpen) {
+				if (!activeMap.map.hasLayer(activeMap.popup2)) {
 			        //get lat/long
 			        if(($.inArray(feature.properties.Name,open_tooltips)<0)){
 						activeMap.popup.setLatLng(activeMap.map.layerPointToLatLng(ev.layerPoint));
@@ -699,9 +783,17 @@ CityDigitsMapOpinion.prototype.loadCreateMapLayers = function (){
 			layer.on("click",function(ev){
 				// close all open popups
 				activeMap.map.closePopup();
+
+				// add popups as layers
+				var thisPopup;
+				if (activeMap.map.hasLayer(activeMap.popup2)) {
+					thisPopup = activeMap.popup3;
+				} else {
+					thisPopup = activeMap.popup2;
+				}
 		
 				// bind popup with data to the feature
-				activeMap.popup2.setLatLng(activeMap.map.layerPointToLatLng(ev.layerPoint));
+				thisPopup.setLatLng(activeMap.map.layerPointToLatLng(ev.layerPoint));
 				// numerator
 				var McDonalds = feature.properties.McDonalds1;
 				McDonalds = McDonalds.toFixed(0);
@@ -724,8 +816,8 @@ CityDigitsMapOpinion.prototype.loadCreateMapLayers = function (){
 				
 				var popupContent = header + mcDonaldsText + hr + sq_mileText + footer;
 		
-				activeMap.popup2.setContent(popupContent);
-				activeMap.popup2.openOn(activeMap.map);
+				thisPopup.setContent(popupContent);
+				activeMap.map.addLayer(thisPopup);
 			});
 	
 		}
@@ -745,7 +837,7 @@ CityDigitsMapOpinion.prototype.loadCreateMapLayers = function (){
 		    //add on hover -- same on hover and mousemove for each layer
 		    layer.on('mouseover', function(ev) {
 				// only have on mouseover work if popup2 isn't open
-				if (!activeMap.popup2._isOpen) {
+				if (!activeMap.map.hasLayer(activeMap.popup2)) {
 			    	activeMap.popup.setLatLng(activeMap.map.layerPointToLatLng(ev.layerPoint));
 					activeMap.popup.setContent('<div class="rollover-tooltip text-capitalize">'+feature.properties.Name + '</div>');
 		
@@ -765,7 +857,7 @@ CityDigitsMapOpinion.prototype.loadCreateMapLayers = function (){
 		    layer.on('mousemove', function(ev) {
 		
 				// only have on mousemove work if popup2 isn't open
-				if (!activeMap.popup2._isOpen) {
+				if (!activeMap.map.hasLayer(activeMap.popup2)) {
 			        //get lat/long
 			        if(($.inArray(feature.properties.Name,open_tooltips)<0)){
 						activeMap.popup.setLatLng(activeMap.map.layerPointToLatLng(ev.layerPoint));
@@ -788,9 +880,17 @@ CityDigitsMapOpinion.prototype.loadCreateMapLayers = function (){
 			layer.on("click",function(ev){
 				// close all open popups
 				activeMap.map.closePopup();
+
+				// add popups as layers
+				var thisPopup;
+				if (activeMap.map.hasLayer(activeMap.popup2)) {
+					thisPopup = activeMap.popup3;
+				} else {
+					thisPopup = activeMap.popup2;
+				}
 		
 				// bind popup with data to the feature
-				activeMap.popup2.setLatLng(activeMap.map.layerPointToLatLng(ev.layerPoint));
+				thisPopup.setLatLng(activeMap.map.layerPointToLatLng(ev.layerPoint));
 				// numerator
 				var Households = feature.properties.Households;
 				Households = accounting.formatNumber(Households, 0, ",", "");
@@ -823,8 +923,8 @@ CityDigitsMapOpinion.prototype.loadCreateMapLayers = function (){
 				
 				var popupContent = header + householdsText + hr + pawnShopsText + checkCashText + moneyTransText + footer;
 		
-				activeMap.popup2.setContent(popupContent);
-				activeMap.popup2.openOn(activeMap.map);
+				thisPopup.setContent(popupContent);
+				activeMap.map.addLayer(thisPopup);
 			});
 	
 		}
@@ -844,7 +944,7 @@ CityDigitsMapOpinion.prototype.loadCreateMapLayers = function (){
 		    //add on hover -- same on hover and mousemove for each layer
 		    layer.on('mouseover', function(ev) {
 				// only have on mouseover work if popup2 isn't open
-				if (!activeMap.popup2._isOpen) {
+				if (!activeMap.map.hasLayer(activeMap.popup2)) {
 			    	activeMap.popup.setLatLng(activeMap.map.layerPointToLatLng(ev.layerPoint));
 					activeMap.popup.setContent('<div class="rollover-tooltip text-capitalize">'+feature.properties.Name + '</div>');
 		
@@ -864,7 +964,7 @@ CityDigitsMapOpinion.prototype.loadCreateMapLayers = function (){
 		    layer.on('mousemove', function(ev) {
 		
 				// only have on mousemove work if popup2 isn't open
-				if (!activeMap.popup2._isOpen) {
+				if (!activeMap.map.hasLayer(activeMap.popup2)) {
 			        //get lat/long
 			        if(($.inArray(feature.properties.Name,open_tooltips)<0)){
 						activeMap.popup.setLatLng(activeMap.map.layerPointToLatLng(ev.layerPoint));
@@ -887,9 +987,17 @@ CityDigitsMapOpinion.prototype.loadCreateMapLayers = function (){
 			layer.on("click",function(ev){
 				// close all open popups
 				activeMap.map.closePopup();
+
+				// add popups as layers
+				var thisPopup;
+				if (activeMap.map.hasLayer(activeMap.popup2)) {
+					thisPopup = activeMap.popup3;
+				} else {
+					thisPopup = activeMap.popup2;
+				}
 		
 				// bind popup with data to the feature
-				activeMap.popup2.setLatLng(activeMap.map.layerPointToLatLng(ev.layerPoint));
+				thisPopup.setLatLng(activeMap.map.layerPointToLatLng(ev.layerPoint));
 				// numerator
 				var Households = feature.properties.Households;
 				Households = accounting.formatNumber(Households, 0, ",", "");
@@ -914,8 +1022,8 @@ CityDigitsMapOpinion.prototype.loadCreateMapLayers = function (){
 				
 				var popupContent = header + householdsText + hr + banksText + footer;
 		
-				activeMap.popup2.setContent(popupContent);
-				activeMap.popup2.openOn(activeMap.map);
+				thisPopup.setContent(popupContent);
+				activeMap.map.addLayer(thisPopup);
 			});
 	
 		}
@@ -935,7 +1043,7 @@ CityDigitsMapOpinion.prototype.loadCreateMapLayers = function (){
 		    //add on hover -- same on hover and mousemove for each layer
 		    layer.on('mouseover', function(ev) {
 				// only have on mouseover work if popup2 isn't open
-				if (!activeMap.popup2._isOpen) {
+				if (!activeMap.map.hasLayer(activeMap.popup2)) {
 			    	activeMap.popup.setLatLng(activeMap.map.layerPointToLatLng(ev.layerPoint));
 					activeMap.popup.setContent('<div class="rollover-tooltip text-capitalize">'+feature.properties.Name + '</div>');
 		
@@ -955,7 +1063,7 @@ CityDigitsMapOpinion.prototype.loadCreateMapLayers = function (){
 		    layer.on('mousemove', function(ev) {
 		
 				// only have on mousemove work if popup2 isn't open
-				if (!activeMap.popup2._isOpen) {
+				if (!activeMap.map.hasLayer(activeMap.popup2)) {
 			        //get lat/long
 			        if(($.inArray(feature.properties.Name,open_tooltips)<0)){
 						activeMap.popup.setLatLng(activeMap.map.layerPointToLatLng(ev.layerPoint));
@@ -978,9 +1086,17 @@ CityDigitsMapOpinion.prototype.loadCreateMapLayers = function (){
 			layer.on("click",function(ev){
 				// close all open popups
 				activeMap.map.closePopup();
+
+				// add popups as layers
+				var thisPopup;
+				if (activeMap.map.hasLayer(activeMap.popup2)) {
+					thisPopup = activeMap.popup3;
+				} else {
+					thisPopup = activeMap.popup2;
+				}
 		
 				// bind popup with data to the feature
-				activeMap.popup2.setLatLng(activeMap.map.layerPointToLatLng(ev.layerPoint));
+				thisPopup.setLatLng(activeMap.map.layerPointToLatLng(ev.layerPoint));
 				// numerator
 				var Households = feature.properties.Households;
 				Households = accounting.formatNumber(Households, 0, ",", "");
@@ -1005,8 +1121,8 @@ CityDigitsMapOpinion.prototype.loadCreateMapLayers = function (){
 				
 				var popupContent = header + householdsText + hr + mcDonaldsText + footer;
 		
-				activeMap.popup2.setContent(popupContent);
-				activeMap.popup2.openOn(activeMap.map);
+				thisPopup.setContent(popupContent);
+				activeMap.map.addLayer(thisPopup);
 			});
 	
 		}
@@ -1026,7 +1142,7 @@ CityDigitsMapOpinion.prototype.loadCreateMapLayers = function (){
 		    //add on hover -- same on hover and mousemove for each layer
 		    layer.on('mouseover', function(ev) {
 				// only have on mouseover work if popup2 isn't open
-				if (!activeMap.popup2._isOpen) {
+				if (!activeMap.map.hasLayer(activeMap.popup2)) {
 			    	activeMap.popup.setLatLng(activeMap.map.layerPointToLatLng(ev.layerPoint));
 					activeMap.popup.setContent('<div class="rollover-tooltip text-capitalize">'+feature.properties.Name + '</div>');
 		
@@ -1046,7 +1162,7 @@ CityDigitsMapOpinion.prototype.loadCreateMapLayers = function (){
 		    layer.on('mousemove', function(ev) {
 		
 				// only have on mousemove work if popup2 isn't open
-				if (!activeMap.popup2._isOpen) {
+				if (!activeMap.map.hasLayer(activeMap.popup2)) {
 			        //get lat/long
 			        if(($.inArray(feature.properties.Name,open_tooltips)<0)){
 						activeMap.popup.setLatLng(activeMap.map.layerPointToLatLng(ev.layerPoint));
@@ -1069,9 +1185,17 @@ CityDigitsMapOpinion.prototype.loadCreateMapLayers = function (){
 			layer.on("click",function(ev){
 				// close all open popups
 				activeMap.map.closePopup();
+
+				// add popups as layers
+				var thisPopup;
+				if (activeMap.map.hasLayer(activeMap.popup2)) {
+					thisPopup = activeMap.popup3;
+				} else {
+					thisPopup = activeMap.popup2;
+				}
 		
 				// bind popup with data to the feature
-				activeMap.popup2.setLatLng(activeMap.map.layerPointToLatLng(ev.layerPoint));
+				thisPopup.setLatLng(activeMap.map.layerPointToLatLng(ev.layerPoint));
 				// numerator
 				var Households = feature.properties.Households;
 				Households = accounting.formatNumber(Households, 0, ",", "");
@@ -1096,8 +1220,8 @@ CityDigitsMapOpinion.prototype.loadCreateMapLayers = function (){
 						
 				var popupContent = header + householdsText + hr + pawnShopsText + footer;
 		
-				activeMap.popup2.setContent(popupContent);
-				activeMap.popup2.openOn(activeMap.map);
+				thisPopup.setContent(popupContent);
+				activeMap.map.addLayer(thisPopup);
 			});
 	
 		}
@@ -1117,7 +1241,7 @@ CityDigitsMapOpinion.prototype.loadCreateMapLayers = function (){
 		    //add on hover -- same on hover and mousemove for each layer
 		    layer.on('mouseover', function(ev) {
 				// only have on mouseover work if popup2 isn't open
-				if (!activeMap.popup2._isOpen) {
+				if (!activeMap.map.hasLayer(activeMap.popup2)) {
 			    	activeMap.popup.setLatLng(activeMap.map.layerPointToLatLng(ev.layerPoint));
 					activeMap.popup.setContent('<div class="rollover-tooltip text-capitalize">'+feature.properties.Name + '</div>');
 		
@@ -1137,7 +1261,7 @@ CityDigitsMapOpinion.prototype.loadCreateMapLayers = function (){
 		    layer.on('mousemove', function(ev) {
 		
 				// only have on mousemove work if popup2 isn't open
-				if (!activeMap.popup2._isOpen) {
+				if (!activeMap.map.hasLayer(activeMap.popup2)) {
 			        //get lat/long
 			        if(($.inArray(feature.properties.Name,open_tooltips)<0)){
 						activeMap.popup.setLatLng(activeMap.map.layerPointToLatLng(ev.layerPoint));
@@ -1160,9 +1284,17 @@ CityDigitsMapOpinion.prototype.loadCreateMapLayers = function (){
 			layer.on("click",function(ev){
 				// close all open popups
 				activeMap.map.closePopup();
+
+				// add popups as layers
+				var thisPopup;
+				if (activeMap.map.hasLayer(activeMap.popup2)) {
+					thisPopup = activeMap.popup3;
+				} else {
+					thisPopup = activeMap.popup2;
+				}
 		
 				// bind popup with data to the feature
-				activeMap.popup2.setLatLng(activeMap.map.layerPointToLatLng(ev.layerPoint));
+				thisPopup.setLatLng(activeMap.map.layerPointToLatLng(ev.layerPoint));
 				// numerator
 				var Pawnshops = feature.properties.Pawnshops;
 				Pawnshops = Pawnshops.toFixed(0);
@@ -1195,8 +1327,8 @@ CityDigitsMapOpinion.prototype.loadCreateMapLayers = function (){
 				
 				var popupContent = header + pawnShopsText + checkCashText + moneyTransText + hr + banksText + footer;
 		
-				activeMap.popup2.setContent(popupContent);
-				activeMap.popup2.openOn(activeMap.map);
+				thisPopup.setContent(popupContent);
+				activeMap.map.addLayer(thisPopup);
 			});
 	
 		}
@@ -1216,7 +1348,7 @@ CityDigitsMapOpinion.prototype.loadCreateMapLayers = function (){
 		    //add on hover -- same on hover and mousemove for each layer
 		    layer.on('mouseover', function(ev) {
 				// only have on mouseover work if popup2 isn't open
-				if (!activeMap.popup2._isOpen) {
+				if (!activeMap.map.hasLayer(activeMap.popup2)) {
 			    	activeMap.popup.setLatLng(activeMap.map.layerPointToLatLng(ev.layerPoint));
 					activeMap.popup.setContent('<div class="rollover-tooltip text-capitalize">'+feature.properties.Name + '</div>');
 
@@ -1236,7 +1368,7 @@ CityDigitsMapOpinion.prototype.loadCreateMapLayers = function (){
 		    layer.on('mousemove', function(ev) {
 
 				// only have on mousemove work if popup2 isn't open
-				if (!activeMap.popup2._isOpen) {
+				if (!activeMap.map.hasLayer(activeMap.popup2)) {
 			        //get lat/long
 			        if(($.inArray(feature.properties.Name,open_tooltips)<0)){
 						activeMap.popup.setLatLng(activeMap.map.layerPointToLatLng(ev.layerPoint));
@@ -1260,8 +1392,16 @@ CityDigitsMapOpinion.prototype.loadCreateMapLayers = function (){
 				// close all open popups
 				activeMap.map.closePopup();
 
+				// add popups as layers
+				var thisPopup;
+				if (activeMap.map.hasLayer(activeMap.popup2)) {
+					thisPopup = activeMap.popup3;
+				} else {
+					thisPopup = activeMap.popup2;
+				}
+
 				// bind popup with data to the feature
-				activeMap.popup2.setLatLng(activeMap.map.layerPointToLatLng(ev.layerPoint));
+				thisPopup.setLatLng(activeMap.map.layerPointToLatLng(ev.layerPoint));
 				// numerator
 				var Banks = feature.properties.Banks;
 				Banks = Banks.toFixed(0);
@@ -1294,8 +1434,8 @@ CityDigitsMapOpinion.prototype.loadCreateMapLayers = function (){
 		
 				var popupContent = header + banksText + hr + pawnShopsText + checkCashText + moneyTransText + footer;
 
-				activeMap.popup2.setContent(popupContent);
-				activeMap.popup2.openOn(activeMap.map);
+				thisPopup.setContent(popupContent);
+				activeMap.map.addLayer(thisPopup);
 			});
 
 		}
@@ -1879,9 +2019,17 @@ CityDigitsMapOpinion.prototype.loadMarkers = function(){
 		    //add on hover -- same on hover and mousemove for each layer
 		    layer.on('mouseover', function(ev) {
 				// only have on mouseover work if popup2 isn't open
-				if (!activeMap.popup2._isOpen) {
+				if (!activeMap.map.hasLayer(activeMap.popup2)) {
 					// close all popups first
 					activeMap.map.closePopup();
+
+				// add popups as layers
+				var thisPopup;
+				if (activeMap.map.hasLayer(activeMap.popup2)) {
+					thisPopup = activeMap.popup3;
+				} else {
+					thisPopup = activeMap.popup2;
+				}
 			    	activeMap.popup.setLatLng(activeMap.map.layerPointToLatLng(ev.layerPoint));
 					activeMap.popup.setContent('<div class="rollover-tooltip text-capitalize"><div class="pawnshop-icon"></div>Pawn Shop<h4>' + feature.properties.name + '</h4><p>'+ feature.properties.address + '</p></div>');
 		
@@ -1900,7 +2048,7 @@ CityDigitsMapOpinion.prototype.loadMarkers = function(){
 		    layer.on('mousemove', function(ev) {
 		
 				// only have on mousemove work if popup2 isn't open
-				if (!activeMap.popup2._isOpen) {
+				if (!activeMap.map.hasLayer(activeMap.popup2)) {
 			        //get lat/long
 			        if(($.inArray(feature.properties.name,open_tooltips)<0)){
 						activeMap.popup.setLatLng(activeMap.map.layerPointToLatLng(ev.layerPoint));
@@ -1923,8 +2071,16 @@ CityDigitsMapOpinion.prototype.loadMarkers = function(){
 				layer.setStyle(noHighlight);
 		
 				// close popup
-				if (!activeMap.popup2._isOpen) {
+				if (!activeMap.map.hasLayer(activeMap.popup2)) {
 					activeMap.map.closePopup();
+
+				// add popups as layers
+				var thisPopup;
+				if (activeMap.map.hasLayer(activeMap.popup2)) {
+					thisPopup = activeMap.popup3;
+				} else {
+					thisPopup = activeMap.popup2;
+				}
 				}
 				
 		    });
@@ -1934,6 +2090,14 @@ CityDigitsMapOpinion.prototype.loadMarkers = function(){
 			layer.on("click",function(ev){
 				// close all open popups
 				activeMap.map.closePopup();
+
+				// add popups as layers
+				var thisPopup;
+				if (activeMap.map.hasLayer(activeMap.popup2)) {
+					thisPopup = activeMap.popup3;
+				} else {
+					thisPopup = activeMap.popup2;
+				}
 		
 				// bind popup with data to the feature
 				activeMap.popup.setLatLng(activeMap.map.layerPointToLatLng(ev.layerPoint));
@@ -1963,9 +2127,17 @@ CityDigitsMapOpinion.prototype.loadMarkers = function(){
 		    //add on hover -- same on hover and mousemove for each layer
 		    layer.on('mouseover', function(ev) {
 				// only have on mouseover work if popup2 isn't open
-				if (!activeMap.popup2._isOpen) {
+				if (!activeMap.map.hasLayer(activeMap.popup2)) {
 					// close all popups first
 					activeMap.map.closePopup();
+
+				// add popups as layers
+				var thisPopup;
+				if (activeMap.map.hasLayer(activeMap.popup2)) {
+					thisPopup = activeMap.popup3;
+				} else {
+					thisPopup = activeMap.popup2;
+				}
 			    	activeMap.popup.setLatLng(activeMap.map.layerPointToLatLng(ev.layerPoint));
 					activeMap.popup.setContent('<div class="rollover-tooltip text-capitalize"><div class="checkcashing-icon"></div>Check Cashing<h4>' + feature.properties.name + '</h4><p>'+ feature.properties.address + '</p></div>');
 		
@@ -1985,7 +2157,7 @@ CityDigitsMapOpinion.prototype.loadMarkers = function(){
 		    layer.on('mousemove', function(ev) {
 		
 				// only have on mousemove work if popup2 isn't open
-				if (!activeMap.popup2._isOpen) {
+				if (!activeMap.map.hasLayer(activeMap.popup2)) {
 			        //get lat/long
 			        if(($.inArray(feature.properties.name,open_tooltips)<0)){
 						activeMap.popup.setLatLng(activeMap.map.layerPointToLatLng(ev.layerPoint));
@@ -2008,8 +2180,16 @@ CityDigitsMapOpinion.prototype.loadMarkers = function(){
 				layer.setStyle(noHighlight);
 		
 				// close popup
-				if (!activeMap.popup2._isOpen) {
+				if (!activeMap.map.hasLayer(activeMap.popup2)) {
 					activeMap.map.closePopup();
+
+				// add popups as layers
+				var thisPopup;
+				if (activeMap.map.hasLayer(activeMap.popup2)) {
+					thisPopup = activeMap.popup3;
+				} else {
+					thisPopup = activeMap.popup2;
+				}
 				}
 				
 		    });
@@ -2019,6 +2199,14 @@ CityDigitsMapOpinion.prototype.loadMarkers = function(){
 			layer.on("click",function(ev){
 				// close all open popups
 				activeMap.map.closePopup();
+
+				// add popups as layers
+				var thisPopup;
+				if (activeMap.map.hasLayer(activeMap.popup2)) {
+					thisPopup = activeMap.popup3;
+				} else {
+					thisPopup = activeMap.popup2;
+				}
 		
 				// bind popup with data to the feature
 				activeMap.popup.setLatLng(activeMap.map.layerPointToLatLng(ev.layerPoint));
@@ -2048,9 +2236,17 @@ CityDigitsMapOpinion.prototype.loadMarkers = function(){
 		    //add on hover -- same on hover and mousemove for each layer
 		    layer.on('mouseover', function(ev) {
 				// only have on mouseover work if popup2 isn't open
-				if (!activeMap.popup2._isOpen) {
+				if (!activeMap.map.hasLayer(activeMap.popup2)) {
 					// close all popups first
 					activeMap.map.closePopup();
+
+				// add popups as layers
+				var thisPopup;
+				if (activeMap.map.hasLayer(activeMap.popup2)) {
+					thisPopup = activeMap.popup3;
+				} else {
+					thisPopup = activeMap.popup2;
+				}
 			    	activeMap.popup.setLatLng(activeMap.map.layerPointToLatLng(ev.layerPoint));
 					activeMap.popup.setContent('<div class="rollover-tooltip text-capitalize"><div class="wiretransfer-icon"></div>Wire Transfer<h4>' + feature.properties.name + '</h4><p>'+ feature.properties.address + '</p></div>');
 		
@@ -2070,7 +2266,7 @@ CityDigitsMapOpinion.prototype.loadMarkers = function(){
 		    layer.on('mousemove', function(ev) {
 		
 				// only have on mousemove work if popup2 isn't open
-				if (!activeMap.popup2._isOpen) {
+				if (!activeMap.map.hasLayer(activeMap.popup2)) {
 			        //get lat/long
 			        if(($.inArray(feature.properties.name,open_tooltips)<0)){
 						activeMap.popup.setLatLng(activeMap.map.layerPointToLatLng(ev.layerPoint));
@@ -2093,8 +2289,16 @@ CityDigitsMapOpinion.prototype.loadMarkers = function(){
 				layer.setStyle(noHighlight);
 		
 				// close popup
-				if (!activeMap.popup2._isOpen) {
+				if (!activeMap.map.hasLayer(activeMap.popup2)) {
 					activeMap.map.closePopup();
+
+				// add popups as layers
+				var thisPopup;
+				if (activeMap.map.hasLayer(activeMap.popup2)) {
+					thisPopup = activeMap.popup3;
+				} else {
+					thisPopup = activeMap.popup2;
+				}
 				}
 				
 		    });
@@ -2104,6 +2308,14 @@ CityDigitsMapOpinion.prototype.loadMarkers = function(){
 			layer.on("click",function(ev){
 				// close all open popups
 				activeMap.map.closePopup();
+
+				// add popups as layers
+				var thisPopup;
+				if (activeMap.map.hasLayer(activeMap.popup2)) {
+					thisPopup = activeMap.popup3;
+				} else {
+					thisPopup = activeMap.popup2;
+				}
 		
 				// bind popup with data to the feature
 				activeMap.popup.setLatLng(activeMap.map.layerPointToLatLng(ev.layerPoint));
@@ -2132,9 +2344,17 @@ CityDigitsMapOpinion.prototype.loadMarkers = function(){
 		    //add on hover -- same on hover and mousemove for each layer
 		    layer.on('mouseover', function(ev) {
 				// only have on mouseover work if popup2 isn't open
-				if (!activeMap.popup2._isOpen) {
+				if (!activeMap.map.hasLayer(activeMap.popup2)) {
 					// close all popups first
 					activeMap.map.closePopup();
+
+				// add popups as layers
+				var thisPopup;
+				if (activeMap.map.hasLayer(activeMap.popup2)) {
+					thisPopup = activeMap.popup3;
+				} else {
+					thisPopup = activeMap.popup2;
+				}
 			    	activeMap.popup.setLatLng(activeMap.map.layerPointToLatLng(ev.layerPoint));
 					activeMap.popup.setContent('<div class="rollover-tooltip text-capitalize"><div class="banks-icon"></div>Bank<h4>' + feature.properties.name + '</h4><p>'+ feature.properties.address + '</p></div>');
 		
@@ -2154,7 +2374,7 @@ CityDigitsMapOpinion.prototype.loadMarkers = function(){
 		    layer.on('mousemove', function(ev) {
 		
 				// only have on mousemove work if popup2 isn't open
-				if (!activeMap.popup2._isOpen) {
+				if (!activeMap.map.hasLayer(activeMap.popup2)) {
 			        //get lat/long
 			        if(($.inArray(feature.properties.name,open_tooltips)<0)){
 						activeMap.popup.setLatLng(activeMap.map.layerPointToLatLng(ev.layerPoint));
@@ -2177,8 +2397,16 @@ CityDigitsMapOpinion.prototype.loadMarkers = function(){
 				layer.setStyle(noHighlight);
 		
 				// close popup
-				if (!activeMap.popup2._isOpen) {
+				if (!activeMap.map.hasLayer(activeMap.popup2)) {
 					activeMap.map.closePopup();
+
+				// add popups as layers
+				var thisPopup;
+				if (activeMap.map.hasLayer(activeMap.popup2)) {
+					thisPopup = activeMap.popup3;
+				} else {
+					thisPopup = activeMap.popup2;
+				}
 				}
 				
 		    });
@@ -2188,6 +2416,14 @@ CityDigitsMapOpinion.prototype.loadMarkers = function(){
 			layer.on("click",function(ev){
 				// close all open popups
 				activeMap.map.closePopup();
+
+				// add popups as layers
+				var thisPopup;
+				if (activeMap.map.hasLayer(activeMap.popup2)) {
+					thisPopup = activeMap.popup3;
+				} else {
+					thisPopup = activeMap.popup2;
+				}
 		
 				// bind popup with data to the feature
 				activeMap.popup.setLatLng(activeMap.map.layerPointToLatLng(ev.layerPoint));
@@ -2216,9 +2452,17 @@ CityDigitsMapOpinion.prototype.loadMarkers = function(){
 		    //add on hover -- same on hover and mousemove for each layer
 		    layer.on('mouseover', function(ev) {
 				// only have on mouseover work if popup2 isn't open
-				if (!activeMap.popup2._isOpen) {
+				if (!activeMap.map.hasLayer(activeMap.popup2)) {
 					// close all popups first
 					activeMap.map.closePopup();
+
+				// add popups as layers
+				var thisPopup;
+				if (activeMap.map.hasLayer(activeMap.popup2)) {
+					thisPopup = activeMap.popup3;
+				} else {
+					thisPopup = activeMap.popup2;
+				}
 			    	activeMap.popup.setLatLng(activeMap.map.layerPointToLatLng(ev.layerPoint));
 					activeMap.popup.setContent('<div class="rollover-tooltip text-capitalize"><div class="mcdonalds-icon"></div>McDonald\'s<h4>' + feature.properties.name + '</h4><p>'+ feature.properties.address + '</p></div>');
 		
@@ -2238,7 +2482,7 @@ CityDigitsMapOpinion.prototype.loadMarkers = function(){
 		    layer.on('mousemove', function(ev) {
 		
 				// only have on mousemove work if popup2 isn't open
-				if (!activeMap.popup2._isOpen) {
+				if (!activeMap.map.hasLayer(activeMap.popup2)) {
 			        //get lat/long
 			        if(($.inArray(feature.properties.name,open_tooltips)<0)){
 						activeMap.popup.setLatLng(activeMap.map.layerPointToLatLng(ev.layerPoint));
@@ -2261,8 +2505,16 @@ CityDigitsMapOpinion.prototype.loadMarkers = function(){
 				layer.setStyle(noHighlight);
 		
 				// close popup
-				if (!activeMap.popup2._isOpen) {
+				if (!activeMap.map.hasLayer(activeMap.popup2)) {
 					activeMap.map.closePopup();
+
+				// add popups as layers
+				var thisPopup;
+				if (activeMap.map.hasLayer(activeMap.popup2)) {
+					thisPopup = activeMap.popup3;
+				} else {
+					thisPopup = activeMap.popup2;
+				}
 				}
 				
 		    });
@@ -2272,6 +2524,14 @@ CityDigitsMapOpinion.prototype.loadMarkers = function(){
 			layer.on("click",function(ev){
 				// close all open popups
 				activeMap.map.closePopup();
+
+				// add popups as layers
+				var thisPopup;
+				if (activeMap.map.hasLayer(activeMap.popup2)) {
+					thisPopup = activeMap.popup3;
+				} else {
+					thisPopup = activeMap.popup2;
+				}
 		
 				// bind popup with data to the feature
 				activeMap.popup.setLatLng(activeMap.map.layerPointToLatLng(ev.layerPoint));
@@ -2339,7 +2599,8 @@ CityDigitsMapOpinion.prototype.loadMarkers = function(){
 
 
 CityDigitsMapOpinion.getStyleFor_LOC1_PAWN_SHOPS = function (feature, latlng){
-	var pawnShopMarker = L.circle(latlng, 80, {
+	var pawnShopMarker = L.circleMarker(latlng, {
+		radius: 4,
 		stroke: false,
 		fillColor: '#eb4a42',
 		fillOpacity: 0.75
@@ -2350,7 +2611,8 @@ CityDigitsMapOpinion.getStyleFor_LOC1_PAWN_SHOPS = function (feature, latlng){
 }
 
 CityDigitsMapOpinion.getStyleFor_LOC2_CHECK_CASHING = function (feature, latlng){
-	var checkCashingMarker = L.circle(latlng, 80, {
+	var checkCashingMarker = L.circleMarker(latlng, {
+		radius: 4,
 		stroke: false,
 		fillColor: '#ffa77f',
 		fillOpacity: 0.75
@@ -2361,7 +2623,8 @@ CityDigitsMapOpinion.getStyleFor_LOC2_CHECK_CASHING = function (feature, latlng)
 }
 
 CityDigitsMapOpinion.getStyleFor_LOC3_WIRE_TRANSFER = function (feature, latlng){
-	var wireTransferMarker = L.circle(latlng, 80, {
+	var wireTransferMarker = L.circleMarker(latlng, {
+		radius: 4,
 		stroke: false,
 		fillColor: '#fa8a12',
 		fillOpacity: 0.75
@@ -2372,7 +2635,8 @@ CityDigitsMapOpinion.getStyleFor_LOC3_WIRE_TRANSFER = function (feature, latlng)
 }
 
 CityDigitsMapOpinion.getStyleFor_LOC4_BANKS = function (feature, latlng){
-	var banksMarker = L.circle(latlng, 80, {
+	var banksMarker = L.circleMarker(latlng, {
+		radius: 4,
 		stroke: false,
 		fillColor: '#fa8aa3',
 		fillOpacity: 0.75
@@ -2383,7 +2647,8 @@ CityDigitsMapOpinion.getStyleFor_LOC4_BANKS = function (feature, latlng){
 }
 
 CityDigitsMapOpinion.getStyleFor_LOC5_MCDONALDS = function (feature, latlng){
-	var mcdonaldsMarker = L.circle(latlng, 80, {
+	var mcdonaldsMarker = L.circleMarker(latlng, {
+		radius: 4,
 		stroke: false,
 		fillColor: '#ebcf42',
 		fillOpacity: 0.75
@@ -2433,9 +2698,10 @@ CityDigitsMapOpinion.prototype.loadMedia = function(){
 		    //add on hover -- same on hover and mousemove for each layer
 		    layer.on('mouseover', function(ev) {
 				// only have on mouseover work if popup2 isn't open
-				if (!activeMap.popup2._isOpen) {
+				if (!activeMap.map.hasLayer(activeMap.popup2)) {
 					// close all popups first
 					activeMap.map.closePopup();
+
 				}
 		    });
 		
@@ -2443,6 +2709,14 @@ CityDigitsMapOpinion.prototype.loadMedia = function(){
 			layer.on("click",function(ev){
 				// close all open popups
 				activeMap.map.closePopup();
+
+				// add popups as layers
+				var thisPopup;
+				if (activeMap.map.hasLayer(activeMap.popup2)) {
+					thisPopup = activeMap.popup3;
+				} else {
+					thisPopup = activeMap.popup2;
+				}
 		
 				var lat = feature.geometry.coordinates[1];
 				var lng = feature.geometry.coordinates[0];
@@ -2450,7 +2724,7 @@ CityDigitsMapOpinion.prototype.loadMedia = function(){
 				// set latlng variable
 				var latlng = L.latLng(lat, lng);
 				// bind popup with data to the feature
-				activeMap.popup2.setLatLng(latlng);
+				thisPopup.setLatLng(latlng);
 
 				var header = '<div class="map-popup"><a href="/cashcity/media/image/' + feature.properties.id + '/" style="text-decoration:none; color:inherit"><h4 class="text-left">' + feature.properties.section + '</h4>';
 				var mediaBox = '<div style="height: 280px; width: 280px; margin: auto; overflow: hidden;"><img src="' + feature.properties.image + '"></div>';
@@ -2459,8 +2733,8 @@ CityDigitsMapOpinion.prototype.loadMedia = function(){
 				
 				var popupContent = header + mediaBox + title + footer;
 		
-				activeMap.popup2.setContent(popupContent);
-				activeMap.popup2.openOn(activeMap.map);
+				thisPopup.setContent(popupContent);
+				activeMap.map.addLayer(thisPopup);
 			});
 	
 		}
@@ -2473,7 +2747,7 @@ CityDigitsMapOpinion.prototype.loadMedia = function(){
 		    //add on hover -- same on hover and mousemove for each layer
 		    layer.on('mouseover', function(ev) {
 				// only have on mouseover work if popup2 isn't open
-				if (!activeMap.popup2._isOpen) {
+				if (!activeMap.map.hasLayer(activeMap.popup2)) {
 					// close all popups first
 					activeMap.map.closePopup();
 				}
@@ -2483,6 +2757,14 @@ CityDigitsMapOpinion.prototype.loadMedia = function(){
 			layer.on("click",function(ev){
 				// close all open popups
 				activeMap.map.closePopup();
+
+				// add popups as layers
+				var thisPopup;
+				if (activeMap.map.hasLayer(activeMap.popup2)) {
+					thisPopup = activeMap.popup3;
+				} else {
+					thisPopup = activeMap.popup2;
+				}
 		
 				var lat = feature.geometry.coordinates[1];
 				var lng = feature.geometry.coordinates[0];
@@ -2490,7 +2772,7 @@ CityDigitsMapOpinion.prototype.loadMedia = function(){
 				// set latlng variable
 				var latlng = L.latLng(lat, lng);
 				// bind popup with data to the feature
-				activeMap.popup2.setLatLng(latlng);
+				thisPopup.setLatLng(latlng);
 		
 				var header = '<div class="map-popup"><a href="/cashcity/media/audio/' + feature.properties.id + '/" style="text-decoration:none; color:inherit"><h4 class="text-left">' + feature.properties.section + '</h4></a>';
 				var mediaBox = '<div style="margin-right: auto; margin-left: auto; margin-top: 10px;"><audio src="' + feature.properties.audio + '" preload="auto" controls></audio></div>';
@@ -2499,8 +2781,8 @@ CityDigitsMapOpinion.prototype.loadMedia = function(){
 				
 				var popupContent = header + mediaBox + title + footer;
 		
-				activeMap.popup2.setContent(popupContent);
-				activeMap.popup2.openOn(activeMap.map);
+				thisPopup.setContent(popupContent);
+				activeMap.map.addLayer(thisPopup);
 			});
 	
 		}
@@ -2513,7 +2795,7 @@ CityDigitsMapOpinion.prototype.loadMedia = function(){
 		    //add on hover -- same on hover and mousemove for each layer
 		    layer.on('mouseover', function(ev) {
 				// only have on mouseover work if popup2 isn't open
-				if (!activeMap.popup2._isOpen) {
+				if (!activeMap.map.hasLayer(activeMap.popup2)) {
 					// close all popups first
 					activeMap.map.closePopup();
 				}
@@ -2523,6 +2805,14 @@ CityDigitsMapOpinion.prototype.loadMedia = function(){
 			layer.on("click",function(ev){
 				// close all open popups
 				activeMap.map.closePopup();
+
+				// add popups as layers
+				var thisPopup;
+				if (activeMap.map.hasLayer(activeMap.popup2)) {
+					thisPopup = activeMap.popup3;
+				} else {
+					thisPopup = activeMap.popup2;
+				}
 		
 				var lat = feature.geometry.coordinates[1];
 				var lng = feature.geometry.coordinates[0];
@@ -2530,7 +2820,7 @@ CityDigitsMapOpinion.prototype.loadMedia = function(){
 				// set latlng variable
 				var latlng = L.latLng(lat, lng);
 				// bind popup with data to the feature
-				activeMap.popup2.setLatLng(latlng);
+				thisPopup.setLatLng(latlng);
 
 				var header = '<div class="map-popup"><a href="/cashcity/media/note/' + feature.properties.id + '/" style="text-decoration:none; color:inherit"><h4 class="text-left">' + feature.properties.section + '</h4>';
 				var title = '<div style="margin-top: 5px"><p class="text-left">' + feature.properties.name + '</p></div>';
@@ -2539,8 +2829,8 @@ CityDigitsMapOpinion.prototype.loadMedia = function(){
 				
 				var popupContent = header + title + mediaBox + footer;
 		
-				activeMap.popup2.setContent(popupContent);
-				activeMap.popup2.openOn(activeMap.map);
+				thisPopup.setContent(popupContent);
+				activeMap.map.addLayer(thisPopup);
 			});
 	
 		}
@@ -2553,7 +2843,7 @@ CityDigitsMapOpinion.prototype.loadMedia = function(){
 		    //add on hover -- same on hover and mousemove for each layer
 		    layer.on('mouseover', function(ev) {
 				// only have on mouseover work if popup2 isn't open
-				if (!activeMap.popup2._isOpen) {
+				if (!activeMap.map.hasLayer(activeMap.popup2)) {
 					// close all popups first
 					activeMap.map.closePopup();
 				}
@@ -2563,6 +2853,14 @@ CityDigitsMapOpinion.prototype.loadMedia = function(){
 			layer.on("click",function(ev){
 				// close all open popups
 				activeMap.map.closePopup();
+
+				// add popups as layers
+				var thisPopup;
+				if (activeMap.map.hasLayer(activeMap.popup2)) {
+					thisPopup = activeMap.popup3;
+				} else {
+					thisPopup = activeMap.popup2;
+				}
 		
 				var lat = feature.geometry.coordinates[1];
 				var lng = feature.geometry.coordinates[0];
@@ -2570,7 +2868,7 @@ CityDigitsMapOpinion.prototype.loadMedia = function(){
 				// set latlng variable
 				var latlng = L.latLng(lat, lng);
 				// bind popup with data to the feature
-				activeMap.popup2.setLatLng(latlng);
+				thisPopup.setLatLng(latlng);
 
 				var header = '<div class="map-popup"><a href="/cashcity/media/interview/' + feature.properties.id + '/" style="text-decoration:none; color:inherit"><h4 class="text-left">' + feature.properties.section + '</h4>';
 				var mediaBox = '<div style="height: 280px; width: 280px; margin: auto; overflow: hidden;"><img src="' + feature.properties.image + '"></div></a><div style="margin-right: auto; margin-left: auto; margin-top: 10px;"><audio src="' + feature.properties.audio + '" preload="auto" controls></audio></div>';
@@ -2579,8 +2877,8 @@ CityDigitsMapOpinion.prototype.loadMedia = function(){
 				
 				var popupContent = header + mediaBox + title + footer;
 		
-				activeMap.popup2.setContent(popupContent);
-				activeMap.popup2.openOn(activeMap.map);
+				thisPopup.setContent(popupContent);
+				activeMap.map.addLayer(thisPopup);
 			});
 	
 		}
@@ -2600,7 +2898,7 @@ CityDigitsMapOpinion.getStyleFor_MEDIA = function(feature, latlng){
 }
 
 
-CityDigitsMapOpinion.loadLayerFor = function(layerId, activeMap){
+CityDigitsMapOpinion.loadLayerFor = function(layerId, activeMap, sectionNumber){
 	
     if(layerId == "MAP1"){
         mainLayer = activeMap.MAP1_POP_POVERTY;
@@ -2673,6 +2971,21 @@ CityDigitsMapOpinion.loadLayerFor = function(layerId, activeMap){
 				mainLayer.addTo(activeMap.map).bringToBack();
     }
 
+   	//allow legend button to be clicked and show/hide legend
+	$('#legend'+sectionNumber).click(function() {
+		if (mainLayer != null) {
+			var mapid = mainLayer._leaflet_id;
+			if ($( "#legendid"+sectionNumber ).hasClass( "legendClosed" )) {
+				// change to legend AFI
+				$('#legendid'+sectionNumber).attr('class', mapid);	
+			} else {
+				//Switch back to legend
+				$('#legendid'+sectionNumber).attr('class', 'legendClosed');	
+			}			
+		}
+	});
+
+
 }
 
 CityDigitsMapOpinion.loadLocationsLayerFor = function(layerId, activeMap){
@@ -2707,6 +3020,236 @@ CityDigitsMapOpinion.loadMediaLayers = function(activeMap){
 	MEDIA_NOTE = activeMap.MEDIA_NOTE.addTo(activeMap.map).bringToFront();
 	MEDIA_INTERVIEW = activeMap.MEDIA_INTERVIEW.addTo(activeMap.map).bringToFront();		
 
+}
+
+
+CityDigitsMapOpinion.drawChart = function(layerId, sectionNumber){
+	// remove chart a tag, which we repace with the svg drawn below
+	$("#chart"+sectionNumber).remove();
+	
+	// change class of chartId div to enlarge and set background white
+	$('#chartid'+sectionNumber).attr('class', 'chartDiv opinion');	
+	
+	//set up container for mouseover interaction
+	var div = d3.select("body").append("div")
+	    .attr("class", "barchartTooltip")
+	    .style("opacity", 1e-6);
+		
+	//set properties depending on layerid selected	
+	if (layerId == 'legendpoverty') {
+		var propertyName = 'PovertyPer';
+		var formatter = d3.format(".0%");
+		var title = 'Percent Population in Poverty';
+		var yMin = 0;
+	} 
+	if (layerId == 'legendmedhhinc') {
+		var propertyName = 'MedHouInco';
+		var formatNumber = d3.format(",.0f")
+		var formatter = function(d) { return "$" + formatNumber(d); };
+		var title = 'Median Household Income';
+		var yMin = 0;
+	}
+	if (layerId == 'legendunemploy') {
+		var propertyName = 'UnempRate';
+		var formatter = d3.format(".1%");
+		var title = 'Percent Unemployed';
+		var yMin = 0;
+	} 
+	if (layerId == 'legendforeignborn') {
+		var propertyName = 'ForBornPer';
+		var formatter = d3.format(".0%");
+		var title = 'Percent Population Foreign Born';
+		var yMin = 0;
+	} 
+	if (layerId == 'legendAFIpersqmi') {
+		var propertyName = 'AFS_SQMI';
+		var formatter = d3.format(",.2f")
+		var title = 'Alternative Financial Insitutions per Square Mile';
+		var yMin = -1;
+	} 
+	if (layerId == 'legendbankspersqmi') {
+		var propertyName = 'BANK_SQMI';
+		var formatter = d3.format(",.2f")
+		var title = 'Banks per Square Mile';
+		var yMin = -1;
+	} 
+	if (layerId == 'legendpawnsqmi') {
+		var propertyName = 'PAWN_SQMI';
+		var formatter = d3.format(",.2f")
+		var title = 'Pawn Shops per Square Mile';
+		var yMin = -1;
+	} 
+	if (layerId == 'legendmcdonaldspersqi') {
+		var propertyName = 'McD_SQMI';
+		var formatter = d3.format(",.2f")
+		var title = 'McDonald\'s per Square Mile';
+		var yMin = -1;
+	} 
+	if (layerId == 'legendhouseholdsperAFI') {
+		var propertyName = 'HH_AFS';
+		var formatter = d3.format(",.2f")
+		var title = 'Households per Alternative Financial Insitution';
+		var yMin = -500;
+	} 
+	if (layerId == 'legendhouseholdsperbank') {
+		var propertyName = 'HH_BANK';
+		var formatter = d3.format(",.2f")
+		var title = 'Households per Bank';
+		var yMin = -500;
+	} 
+	if (layerId == 'legendhouseholdsperMcD') {
+		var propertyName = 'HH_McD';
+		var formatter = d3.format(",.2f")
+		var title = 'Households per McDonald\'s';
+		var yMin = -500;
+	} 
+	if (layerId == 'legendhouseholdsperpawn') {
+		var propertyName = 'HH_PAWN';
+		var formatter = d3.format(",.2f")
+		var title = 'Households per Pawn Shop';
+		var yMin = -999;
+	} 
+	if (layerId == 'legendAFIsperbank') {
+		var propertyName = 'AFS_BANK';
+		var formatter = d3.format(",.2f")
+		var title = 'Alternative Financial Insitutions per Bank';
+		var yMin = -1;
+	} 
+	if (layerId == 'legendbanksperAFIs') {
+		var propertyName = 'BANK_AFS';
+		var formatter = d3.format(",.2f")
+		var title = 'Banks per Alternative Financial Insitution';
+		var yMin = -1;
+	} 
+	
+	
+	var margin = {top: 50, right: 20, bottom: 30, left: 70},
+			width = 300 - margin.left - margin.right,
+	    height = 200 - margin.top - margin.bottom;
+	
+	var x = d3.scale.ordinal()
+	    .rangeBands([0, width], 0, 1);
+
+	var y = d3.scale.linear()
+	    .range([height, 0]);
+
+	var yAxis = d3.svg.axis()
+	    .scale(y)
+	    .orient("left")
+		.tickFormat(formatter);
+		
+	var svg = d3.select("#chartid"+sectionNumber).append("svg")
+	    .attr("width", width + margin.left + margin.right)
+	    .attr("height", height + margin.top + margin.bottom)
+		.attr("id", 'svgChart'+sectionNumber)
+	  .append("g")
+	    .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+		
+	d3.json(neighborhoods, function(error, data) {
+	  var openedTopoJson = topojson.feature(data, data.objects.all_map_data_boundariesfixed_Nov13).features;
+	  
+	  // filter out over 1000 values for BANK_AFS and AFS_BANK to remove undefined values set in the data
+	  if (propertyName == 'BANK_AFS' || propertyName == 'AFS_BANK') {
+		  openedTopoJson = $.grep(openedTopoJson, function(d) {
+		      return d.properties[propertyName] > -1 && d.properties[propertyName] <= 999;
+		  });
+	  }  
+
+	  // filter out < -1s for household-level data
+	  if (propertyName == 'HH_AFS' || propertyName == 'HH_BANK' || propertyName == 'HH_McD' || propertyName == 'HH_PAWN') {
+		  openedTopoJson = $.grep(openedTopoJson, function(d) {
+		      return d.properties[propertyName] > -1;
+		  });
+	  }  
+
+	  	  
+	  openedTopoJson.sort(function (a, b) {
+	      if (Number(a.properties[propertyName]) > Number(b.properties[propertyName])) {
+			  return 1;	      	
+	      } else if (Number(a.properties[propertyName]) < Number(b.properties[propertyName])) {
+			  return -1;	      	
+	      } else {
+		      // a must be equal to b
+		      return 0;	      	
+	      }
+	  });
+	  x.domain(openedTopoJson.map(function(d) { return d.properties.Name; }));
+	  y.domain([yMin, d3.max(openedTopoJson, function(d) { return d.properties[propertyName]; })]);
+	  
+	  svg.append("g")
+	      .attr("class", "chartTitle")
+	    .append("text")
+	      .attr("y", -20)
+	      .attr("x", 80)
+	      .style("text-anchor", "middle")
+	      .text(title);
+		  		  
+	  svg.append("g")
+	      .attr("class", "chartCloseContainer")
+		 .append("image")
+		  .attr("id", "chartCloseButton"+sectionNumber)
+		  .attr("class", "pointer")
+		  .attr("xlink:href", closeButtonGray)
+		  .attr("y", -40)
+		  .attr("x", 200)
+		  .attr("width", 22)
+		  .attr("height", 22);
+	  
+	  svg.append("g")
+	      .attr("class", "y axis")
+	      .call(yAxis);
+
+	  svg.selectAll(".bar")
+	      .data(openedTopoJson)
+	    .enter().append("rect")
+	      .attr("class", "bar")
+	      .attr("x", function(d) { return x(d.properties.Name); })
+	      .attr("width", x.rangeBand())
+	      .attr("y", function(d) { return y(d.properties[propertyName]); })
+	      .attr("height", function(d) { return height - y(d.properties[propertyName]); })
+		  .attr("id", function(d) { return d.properties.Name })
+		  // set up on mouseover events
+		  .on("mouseover", function(d) {
+				//console.log(d);
+
+			    div.transition()
+			        .duration(250)
+			        .style("opacity", 1);
+					
+			      div.html(
+					'<h4 class="text-left">' + d.properties.Name + '</h4>' +
+					'<p class="text-center">' + formatter(d.properties[propertyName]) + '<br />' + title + '</p>'
+				  )  
+			      .style("left", (d3.event.pageX + 18) + "px")     
+			      .style("top", (d3.event.pageY - 60) + "px");
+
+		  })
+		  .on("mouseout", function() {
+			   div.transition()
+			       .duration(250)
+			       .style("opacity", 1e-6);
+		  });
+		  
+		  
+		  
+	  	// close chart when close chart button is clicked
+	  	$('#chartCloseButton'+sectionNumber).click(function() {
+	  		// remove chart
+	  		CityDigitsMapOpinion.removeChart(layerId, sectionNumber);
+	  	});
+
+	});
+			
+}
+
+CityDigitsMapOpinion.removeChart = function(layerId, sectionNumber){
+	$( "#svgChart"+sectionNumber ).remove();
+	$( "#chartid"+sectionNumber ).append( '<div id="chart'+sectionNumber+'" class="pointer"></div>' );
+	// draw chart based on layer selected
+	$('#chart'+sectionNumber).click(function() {
+		CityDigitsMapOpinion.drawChart(layerId, sectionNumber);
+	});
+	$( "#chartid"+sectionNumber ).attr('class', 'chart-icon');	
 }
 
 	

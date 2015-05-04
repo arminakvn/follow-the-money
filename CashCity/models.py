@@ -25,6 +25,12 @@ class MapSettings(models.Model):
     McDonalds= models.BooleanField()
     SubwayLines= models.BooleanField()
     Media= models.BooleanField()
+    title = models.CharField(max_length=1000, null=True, blank=True)
+    popup2Content= models.CharField(max_length=10000, null=True, blank=True)
+    popup2LatLon= models.CharField(max_length=10000, null=True, blank=True)
+    popup3Content= models.CharField(max_length=10000, null=True, blank=True)
+    popup3LatLon= models.CharField(max_length=10000, null=True, blank=True)
+    chartOn= models.BooleanField()
     created = models.DateTimeField(auto_now_add=True)
     last_modified = models.DateTimeField(auto_now=True)
     
@@ -35,7 +41,7 @@ class MapSettings(models.Model):
         return ExUserProfile.objects.get(user=self.user)
        
     def __unicode__(self):
-        return self.MapLayer
+        return self.title
 
 # Model that stores user profile info beyond username, password, email -- includes teacher and student group data
 class ExUserProfile(models.Model):
@@ -83,6 +89,7 @@ class MediaImage(models.Model):
     longitude = models.DecimalField(max_digits=10, decimal_places=6, null=False, blank=False)
     tags = TaggableManager(blank=True)
     published = models.BooleanField()
+    shared = models.BooleanField()
     created = models.DateTimeField(auto_now_add=True)
     last_modified = models.DateTimeField(auto_now=True)
 
@@ -140,6 +147,7 @@ class MediaAudio(models.Model):
     longitude = models.DecimalField(max_digits=10, decimal_places=6, null=False, blank=False)
     tags = TaggableManager(blank=True)
     published = models.BooleanField()
+    shared = models.BooleanField()
     created = models.DateTimeField(auto_now_add=True)
     last_modified = models.DateTimeField(auto_now=True)
 
@@ -197,6 +205,7 @@ class MediaNote(models.Model):
     longitude = models.DecimalField(max_digits=10, decimal_places=6, null=False, blank=False)
     tags = TaggableManager(blank=True)
     published = models.BooleanField()
+    shared = models.BooleanField()
     created = models.DateTimeField(auto_now_add=True)
     last_modified = models.DateTimeField(auto_now=True)
     
@@ -257,6 +266,7 @@ class MediaInterview(models.Model):
     longitude = models.DecimalField(max_digits=10, decimal_places=6, null=False, blank=False)
     tags = TaggableManager(blank=True)
     published = models.BooleanField()
+    shared = models.BooleanField()
     created = models.DateTimeField(auto_now_add=True)
     last_modified = models.DateTimeField(auto_now=True)
 
@@ -351,6 +361,8 @@ class Opinions(models.Model):
 class OpinionSections(models.Model):
     opinion = models.ForeignKey(Opinions)
     sectionNumber = models.IntegerField()
+    sectionTitle = models.CharField(max_length=2000, null=True, blank=True)
+    mediaTitle = models.CharField(max_length=2000, null=True, blank=True)
     image = models.ForeignKey(MediaImage, null=True, blank=True)
     audio = models.ForeignKey(MediaAudio, null=True, blank=True)
     note = models.ForeignKey(MediaNote, null=True, blank=True)

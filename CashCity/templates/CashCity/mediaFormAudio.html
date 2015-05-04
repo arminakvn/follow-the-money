@@ -39,7 +39,7 @@
 
 
 {% block body_block %}
-<div class="half-container">
+<div  class="col-xs-10 col-xs-offset-1 col-sm-10 col-sm-offset-1 col-md-8 col-md-offset-2 col-lg-6 col-lg-offset-3 medium-container media-page">
 	{% if form.title.value %}
 		<div class="row">
 			<ul class="nav nav-tabs nav-justified nav-tabs-media">
@@ -60,30 +60,67 @@
 		</div>
 	{% endif %}
 	<div class="row padding10bottom">
+		<h4>Add Audio</h4>
 		<small><em>Add media to the map. Make sure to include all the fields below.</em></small>
 	</div>
 	<div class="row">
-		<form role="form" enctype="multipart/form-data" method="post" action="." >{% csrf_token %}
+		<form id="audioForm" role="form" enctype="multipart/form-data" method="post" action="." >{% csrf_token %}
 			<div class="form-group">
 				<label for="title">Title</label>{% if form.title.errors %} <span class="text-danger">{{ form.title.errors|join:", " }}</span>{% endif %}
 				{{ form.title|add_class:"form-control" }}
 			</div>
 			<div class="form-group">
 				{% if form.audio.errors %} <span class="text-danger">{{ form.audio.errors|join:", " }}</span>{% endif %}
-				<div class="input-group">				
-	                <span class="input-group-btn">
-	                    <span class="btn btn-default btn-file">
-	                        Add Audio {{ form.audio|attr:"accept:audio/*"|attr:"capture:microphone" }}
-	                    </span>
-	                </span>
-					{% if form.errors %}
-	               		<input type="text" class="form-control" placeholder='No File Chosen' readonly>
-					{% elif form.audio.value %}
-	               		<input type="text" class="form-control" placeholder='{{ form.audio.value }}' readonly>
+				{% if desktop_tag %}
+					<div class="input-group">				
+		                <span class="input-group-btn">
+		                    <span class="btn btn-default btn-file">
+		                        Add Audio {{ form.audio }}
+		                    </span>
+		                </span>
+						{% if form.errors %}
+		               		<input type="text" class="form-control" placeholder='No File Chosen' readonly>
+						{% elif form.audio.value %}
+		               		<input type="text" class="form-control" placeholder='{{ form.audio.value }}' readonly>
+						{% else %}
+							<input type="text" class="form-control" placeholder='No File Chosen' readonly>
+						{% endif %}
+					</div>
+				{% else %}
+		            {% if audio_tag %}
+						<div class="input-group">				
+			                <span class="input-group-btn">
+			                    <span class="btn btn-default btn-file">
+			                        Add Audio {{ form.audio|attr:"accept:audio/*"|attr:"capture:microphone" }}
+			                    </span>
+			                </span>
+							{% if form.errors %}
+			               		<input type="text" class="form-control" placeholder='No File Chosen' readonly>
+							{% elif form.audio.value %}
+			               		<input type="text" class="form-control" placeholder='{{ form.audio.value }}' readonly>
+							{% else %}
+								<input type="text" class="form-control" placeholder='No File Chosen' readonly>
+							{% endif %}
+						</div>
 					{% else %}
-						<input type="text" class="form-control" placeholder='No File Chosen' readonly>
+						<div class="input-group">				
+			                <span class="input-group-btn">
+			                    <span class="btn btn-default btn-file">
+			                        Add Audio {{ form.audio|attr:"accept:video/*"|attr:"capture:camcorder" }}
+			                    </span>
+			                </span>
+							{% if form.errors %}
+			               		<input type="text" class="form-control" placeholder='No File Chosen' readonly>
+							{% elif form.audio.value %}
+			               		<input type="text" class="form-control" placeholder='{{ form.audio.value }}' readonly>
+							{% else %}
+								<input type="text" class="form-control" placeholder='No File Chosen' readonly>
+							{% endif %}
+						</div>
+						<em><strong>Only audio will be saved from your video recording.</strong></em>
 					{% endif %}
-				</div>
+				{% endif %}
+
 			</div>
 			<div class="form-group">
 				<label for="caption">Caption</label>{% if form.caption.errors %} <span class="text-danger">{{ form.caption.errors|join:", " }}</span>{% endif %}
@@ -135,7 +172,7 @@
 	var marker = '';
 	$(document).ready( function() {
 		// set mediaFormAudio to active
-		$('#mediaFormAudio').addClass('active');			
+		$('#mediaFormAudio').addClass('active');
 	});
 	</script>
 	<script type="text/javascript" src="{% static 'CashCity/js/mapbox.js' %}"></script>

@@ -99,122 +99,122 @@
 		* corner icons
 		*/
 
-		.citydigits-legend .legendClosed > a {
+		.citydigits-legend .legendClosed > div {
 			float: left;
 			width: 39px;
 			height: 36px;
 			background-image: url({% static 'CashCity/img/legendbutton_white.png' %});
 		}
 
-		.citydigits-legend .legendClosed > a:hover {
+		.citydigits-legend .legendClosed > div:hover {
 			background-image: url({% static 'CashCity/img/legendbutton_gray.png' %});
 		}
 
-		.citydigits-legend .legendpoverty > a {
+		.citydigits-legend .legendpoverty > div {
 			float: left;
 			width: 200px;
 			height: 188px;
 			background-image: url({% static 'CashCity/img/legend_poverty.png' %});
 		}
 
-		.citydigits-legend .legendmedhhinc > a {
+		.citydigits-legend .legendmedhhinc > div {
 			float: left;
 			width: 200px;
 			height: 225px;
 			background-image: url({% static 'CashCity/img/legend_medhhincome.png' %});
 		}
 
-		.citydigits-legend .legendunemploy > a {
+		.citydigits-legend .legendunemploy > div {
 			float: left;
 			width: 200px;
 			height: 189px;
 			background-image: url({% static 'CashCity/img/legend_unemploy.png' %});
 		}
 
-		.citydigits-legend .legendforeignborn > a {
+		.citydigits-legend .legendforeignborn > div {
 			float: left;
 			width: 200px;
 			height: 189px;
 			background-image: url({% static 'CashCity/img/legend_foreignborn.png' %});
 		}
 
-		.citydigits-legend .legendAFIpersqmi > a {
+		.citydigits-legend .legendAFIpersqmi > div {
 			float: left;
 			width: 200px;
 			height: 189px;
 			background-image: url({% static 'CashCity/img/legend_AFIsq.png' %});
 		}
 
-		.citydigits-legend .legendbankspersqmi > a {
+		.citydigits-legend .legendbankspersqmi > div {
 			float: left;
 			width: 200px;
 			height: 174px;
 			background-image: url({% static 'CashCity/img/legend_banks_sq.png' %});
 		}
 
-		.citydigits-legend .legendpawnsqmi > a {
+		.citydigits-legend .legendpawnsqmi > div {
 			float: left;
 			width: 200px;
 			height: 175px;
 			background-image: url({% static 'CashCity/img/legend_pawn_sq.png' %});
 		}
 
-		.citydigits-legend .legendmcdonaldspersqi > a {
+		.citydigits-legend .legendmcdonaldspersqi > div {
 			float: left;
 			width: 200px;
 			height: 174px;
 			background-image: url({% static 'CashCity/img/legend_mcdonalds_sq.png' %});
 		}
 
-		.citydigits-legend .legendhouseholdsperAFI > a {
+		.citydigits-legend .legendhouseholdsperAFI > div {
 			float: left;
 			width: 200px;
 			height: 265px;
 			background-image: url({% static 'CashCity/img/legend_households_perAFI.png' %});
 		}
 
-		.citydigits-legend .legendhouseholdsperbank > a {
+		.citydigits-legend .legendhouseholdsperbank > div {
 			float: left;
 			width: 200px;
 			height: 249px;
 			background-image: url({% static 'CashCity/img/legend_households_perbank.png' %});
 		}
-		.citydigits-legend .legendhouseholdsperMcD > a {
+		.citydigits-legend .legendhouseholdsperMcD > div {
 			float: left;
 			width: 200px;
 			height: 249px;
 			background-image: url({% static 'CashCity/img/legend_households_permcD.png' %});
 		}
 
-		.citydigits-legend .legendhouseholdsperpawn > a {
+		.citydigits-legend .legendhouseholdsperpawn > div {
 			float: left;
 			width: 200px;
 			height: 248px;
 			background-image: url({% static 'CashCity/img/legend_households_perpawn.png' %});
 		}
 
-		.citydigits-legend .legendAFIsperbank > a {
+		.citydigits-legend .legendAFIsperbank > div {
 			float: left;
 			width: 200px;
 			height: 233px;
 			background-image: url({% static 'CashCity/img/legend_AFI_perbank.png' %});
 		}
 
-		.citydigits-legend .legendbanksperAFIs > a {
+		.citydigits-legend .legendbanksperAFIs > div {
 			float: left;
 			width: 200px;
 			height: 235px;
 			background-image: url({% static 'CashCity/img/legend_banks_perAFI.png' %});
 		}
 			
-		.citydigits-charts .chart-icon > a {
+		.citydigits-charts .chart-icon > div {
 			float: left;
 			width: 39px;
 			height: 36px;
 			background-image: url({% static 'CashCity/img/chart_whitebutton.png' %});
 		}
 
-		.citydigits-charts .chart-icon > a:hover {
+		.citydigits-charts .chart-icon > div:hover {
 			background-image: url({% static 'CashCity/img/chart_graybutton.png' %});
 		}		
 	
@@ -291,8 +291,10 @@
 
 
 {% block body_block %}
-<div class="half-container">
+<div class="col-xs-10 col-xs-offset-1 col-sm-10 col-sm-offset-1 col-md-8 col-md-offset-2 col-lg-6 col-lg-offset-3 opinion-container">
 	<div class="row">
+		<h3>{{ opinionObject.title|title }}</h3>
+		<p><b>By: </b>{{ opinionObject.authors }}</p>
 		<div class="opinion_{{ opinionObject.getUserProfile.color }} pull-left margin-right"></div>
 		{% if opinionObject.getUserProfile.color == None %}
 			<p><strong>Teacher Added: </strong>{{ opinionObject.getUserProfile.teacherName }} 		
@@ -305,8 +307,7 @@
 		<hr />
 	</div>
 	<div class="row">
-		<h3>{{ opinionObject.title|title }}</h3>
-		<p>By {{ opinionObject.authors }}</p>
+		
 		{% if opinionObject.teamImage %}
 			<img src="{% cropped_thumbnail opinionObject 'cropped_teamImage_w640_h480' %}">
 		{% elif opinionObject.coverPhoto %}
@@ -319,12 +320,19 @@
 		<hr />
 	</div>
 	{% for section in opinionSections %}
-	<!-- Section 1 -->		
-		{% if section.sectionNumber == 1 and section.image %}
+	<!-- Section -->		
+		{% if section.image %}
 			{% for image in mediaImages %}
 				{% if image.id == section.image.id %}
 					<div class="row">
-						<h4>SECTION 1</h4>
+						{% if section.sectionTitle %}
+							<h4>{{ section.sectionTitle }}</h4>
+						{% else %}
+							<h4>SECTION {{ section.sectionNumber }}</h4>
+						{% endif %}	
+						{% if section.mediaTitle %}
+							<p><strong>{{ section.mediaTitle }}</strong></p>
+						{% endif %}
 						<img src="{% cropped_thumbnail image 'cropped_image_w640_h480' %}">
 						<br /><br />
 						<p>{{ section.text }}</p>
@@ -333,12 +341,19 @@
 					<br />		
 				{% endif %}
 			{% endfor %}
-		{% elif section.sectionNumber == 1 and section.audio %}
+		{% elif section.audio %}
 			{% for audio in mediaAudio %}
 				{% if audio.id == section.audio.id %}
 					<div class="row">
-						<h4>SECTION 1</h4>
-						{% if ".amr" in audio.audio.path %}
+						{% if section.sectionTitle %}
+							<h4>{{ section.sectionTitle }}</h4>
+						{% else %}
+							<h4>SECTION {{ section.sectionNumber }}</h4>
+						{% endif %}
+						{% if section.mediaTitle %}
+							<p><strong>{{ section.mediaTitle }}</strong></p>
+						{% endif %}
+						{% if ".amr" in audio.audio.path or ".mov" in audio.audio.path or ".MOV" in audio.audio.path or ".gp3" in audio.audio.path or ".mp4" in audio.audio.path %}
 							<audio src="/media/CashCity/{{ audio.audio }}.mp3" preload="auto" controls></audio>
 						{% else %}
 							<audio src="/media/CashCity/{{ audio.audio }}" preload="auto" controls></audio>
@@ -350,12 +365,19 @@
 					<br />		
 				{% endif %}
 			{% endfor %}
-		{% elif section.sectionNumber == 1 and section.note %}
+		{% elif section.note %}
 			{% for note in mediaNotes %}
 				{% if note.id == section.note.id %}
 					<div class="row">
-						<h4>SECTION 1</h4>
-						<p><i><strong>Notes: </strong>{{ note.notes }}</i></p>
+						{% if section.sectionTitle %}
+							<h4>{{ section.sectionTitle }}</h4>
+						{% else %}
+							<h4>SECTION {{ section.sectionNumber }}</h4>
+						{% endif %}
+						{% if section.mediaTitle %}
+							<p><strong>{{ section.mediaTitle }}</strong></p>
+						{% endif %}
+						<p>{{ note.notes }}</p>
 						<br /><br />
 						<p>{{ section.text }}</p>
 						<hr />
@@ -363,14 +385,21 @@
 					<br />		
 				{% endif %}
 			{% endfor %}
-		{% elif section.sectionNumber == 1 and section.interview %}
+		{% elif section.interview %}
 			{% for interview in mediaInterviews %}
 				{% if interview.id == section.interview.id %}
 					<div class="row">
-						<h4>SECTION 1</h4>
+						{% if section.sectionTitle %}
+							<h4>{{ section.sectionTitle }}</h4>
+						{% else %}
+							<h4>SECTION {{ section.sectionNumber }}</h4>
+						{% endif %}
+						{% if section.mediaTitle %}
+							<p><strong>{{ section.mediaTitle }}</strong></p>
+						{% endif %}
 						<img src="{% cropped_thumbnail interview 'cropped_image_w640_h480' %}">
 						<br /><br />
-						{% if ".amr" in interview.audio.path %}
+						{% if ".amr" in interview.audio.path or ".mov" in interview.audio.path or ".MOV" in interview.audio.path or ".gp3" in interview.audio.path or ".mp4" in interview.audio.path %}
 							<audio src="/media/CashCity/{{ interview.audio }}.mp3" preload="auto" controls></audio>
 						{% else %}
 							<audio src="/media/CashCity/{{ interview.audio }}" preload="auto" controls></audio>
@@ -382,12 +411,30 @@
 					<br />		
 				{% endif %}
 			{% endfor %}
-		{% elif section.sectionNumber == 1 and section.mapSnap %}
+		{% elif section.mapSnap %}
 			{% for mapSnap in mapSnaps %}
 				{% if mapSnap.id == section.mapSnap.id %}
 					<div class="row">
-						<h4>SECTION 1</h4>
-						<div id="map_1" class="map-opinion"></div>
+						{% if section.sectionTitle %}
+							<h4>{{ section.sectionTitle }}</h4>
+						{% else %}
+							<h4>SECTION {{ section.sectionNumber }}</h4>
+						{% endif %}
+						{% if section.mediaTitle %}
+							<p><strong>{{ section.mediaTitle }}</strong></p>
+						{% endif %}
+						<div id="map_{{ section.sectionNumber }}" class="map-opinion">
+						    <div id="citydigits-charts{{ section.sectionNumber }}" class="citydigits-charts hidden">
+								<div id="chartid{{ section.sectionNumber }}" class="chart-icon">
+						      	  <div id="chart{{ section.sectionNumber }}" class="pointer"></div>
+							  	</div>
+						    </div>
+							<div id="citydigits-legend{{ section.sectionNumber }}" class="citydigits-legend hidden">
+								<div id= "legendid{{ section.sectionNumber }}" class="legendClosed">
+						      	  <div id="legend{{ section.sectionNumber }}" class="pointer"></div>
+							  	</div>
+						    </div>
+						</div>
 						<a href="/cashcity/mapsnaps/{{ mapSnap.id }}/">View Larger Map</a>
 						<br /><br />
 						<p>{{ section.text }}</p>
@@ -397,9 +444,16 @@
 					{% include 'CashCity/mapSnapOpinions.html' %}		
 				{% endif %}
 			{% endfor %}
-		{% elif section.sectionNumber == 1 and section.uploadImage %}
+		{% elif section.uploadImage %}
 			<div class="row">
-				<h4>SECTION 1</h4>
+				{% if section.sectionTitle %}
+					<h4>{{ section.sectionTitle }}</h4>
+				{% else %}
+					<h4>SECTION {{ section.sectionNumber }}</h4>
+				{% endif %}
+				{% if section.mediaTitle %}
+					<p><strong>{{ section.mediaTitle }}</strong></p>
+				{% endif %}
 				<img src="{% cropped_thumbnail section 'cropped_uploadImage_w640_h480' %}">
 				<br /><br />
 				<p>{{ section.text }}</p>
@@ -407,365 +461,7 @@
 			</div>
 			<br />		
 		{% endif %}
-		
-	<!-- Section 2 -->		
-		{% if section.sectionNumber == 2 and section.image %}
-			{% for image in mediaImages %}
-				{% if image.id == section.image.id %}
-					<div class="row">
-						<h4>SECTION 2</h4>
-						<img src="{% cropped_thumbnail image 'cropped_image_w640_h480' %}">
-						<br /><br />
-						<p>{{ section.text }}</p>
-						<hr />
-					</div>
-					<br />		
-				{% endif %}
-			{% endfor %}
-		{% elif section.sectionNumber == 2 and section.audio %}
-			{% for audio in mediaAudio %}
-				{% if audio.id == section.audio.id %}
-					<div class="row">
-						<h4>SECTION 2</h4>
-						{% if ".amr" in audio.audio.path %}
-							<audio src="/media/CashCity/{{ audio.audio }}.mp3" preload="auto" controls></audio>
-						{% else %}
-							<audio src="/media/CashCity/{{ audio.audio }}" preload="auto" controls></audio>
-						{% endif %}
-						<br /><br />
-						<p>{{ section.text }}</p>
-						<hr />
-					</div>
-					<br />		
-				{% endif %}
-			{% endfor %}
-		{% elif section.sectionNumber == 2 and section.note %}
-			{% for note in mediaNotes %}
-				{% if note.id == section.note.id %}
-					<div class="row">
-						<h4>SECTION 2</h4>
-						<p><i><strong>Notes: </strong>{{ note.notes }}</i></p>
-						<br /><br />
-						<p>{{ section.text }}</p>
-						<hr />
-					</div>
-					<br />		
-				{% endif %}
-			{% endfor %}
-		{% elif section.sectionNumber == 2 and section.interview %}
-			{% for interview in mediaInterviews %}
-				{% if interview.id == section.interview.id %}
-					<div class="row">
-						<h4>SECTION 2</h4>
-						<img src="{% cropped_thumbnail interview 'cropped_image_w640_h480' %}">
-						<br /><br />
-						{% if ".amr" in interview.audio.path %}
-							<audio src="/media/CashCity/{{ interview.audio }}.mp3" preload="auto" controls></audio>
-						{% else %}
-							<audio src="/media/CashCity/{{ interview.audio }}" preload="auto" controls></audio>
-						{% endif %}
-						<br /><br />
-						<p>{{ section.text }}</p>
-						<hr />
-					</div>
-					<br />		
-				{% endif %}
-			{% endfor %}
-		{% elif section.sectionNumber == 2 and section.mapSnap %}
-			{% for mapSnap in mapSnaps %}
-				{% if mapSnap.id == section.mapSnap.id %}
-					<div class="row">
-						<h4>SECTION 2</h4>
-						<div id="map_2" class="map-opinion"></div>
-						<a href="/cashcity/mapsnaps/{{ mapSnap.id }}/">View Larger Map</a>
-						<br /><br />
-						<p>{{ section.text }}</p>
-						<hr />
-					</div>
-					<br />		
-					{% include 'CashCity/mapSnapOpinions.html' %}		
-				{% endif %}
-			{% endfor %}
-		{% elif section.sectionNumber == 2 and section.uploadImage %}
-			<div class="row">
-				<h4>SECTION 2</h4>
-				<img src="{% cropped_thumbnail section 'cropped_uploadImage_w640_h480' %}">
-				<br /><br />
-				<p>{{ section.text }}</p>
-				<hr />
-			</div>
-			<br />		
-		{% endif %}
-		
-	<!-- Section 3 -->		
-		{% if section.sectionNumber == 3 and section.image %}
-			{% for image in mediaImages %}
-				{% if image.id == section.image.id %}
-					<div class="row">
-						<h4>SECTION 3</h4>
-						<img src="{% cropped_thumbnail image 'cropped_image_w640_h480' %}">
-						<br /><br />
-						<p>{{ section.text }}</p>
-						<hr />
-					</div>
-					<br />		
-				{% endif %}
-			{% endfor %}
-		{% elif section.sectionNumber == 3 and section.audio %}
-			{% for audio in mediaAudio %}
-				{% if audio.id == section.audio.id %}
-					<div class="row">
-						<h4>SECTION 3</h4>
-						{% if ".amr" in audio.audio.path %}
-							<audio src="/media/CashCity/{{ audio.audio }}.mp3" preload="auto" controls></audio>
-						{% else %}
-							<audio src="/media/CashCity/{{ audio.audio }}" preload="auto" controls></audio>
-						{% endif %}
-						<br /><br />
-						<p>{{ section.text }}</p>
-						<hr />
-					</div>
-					<br />		
-				{% endif %}
-			{% endfor %}
-		{% elif section.sectionNumber == 3 and section.note %}
-			{% for note in mediaNotes %}
-				{% if note.id == section.note.id %}
-					<div class="row">
-						<h4>SECTION 3</h4>
-						<p><i><strong>Notes: </strong>{{ note.notes }}</i></p>
-						<br /><br />
-						<p>{{ section.text }}</p>
-						<hr />
-					</div>
-					<br />		
-				{% endif %}
-			{% endfor %}
-		{% elif section.sectionNumber == 3 and section.interview %}
-			{% for interview in mediaInterviews %}
-				{% if interview.id == section.interview.id %}
-					<div class="row">
-						<h4>SECTION 3</h4>
-						<img src="{% cropped_thumbnail interview 'cropped_image_w640_h480' %}">
-						<br /><br />
-						{% if ".amr" in interview.audio.path %}
-							<audio src="/media/CashCity/{{ interview.audio }}.mp3" preload="auto" controls></audio>
-						{% else %}
-							<audio src="/media/CashCity/{{ interview.audio }}" preload="auto" controls></audio>
-						{% endif %}
-						<br /><br />
-						<p>{{ section.text }}</p>
-						<hr />
-					</div>
-					<br />		
-				{% endif %}
-			{% endfor %}
-		{% elif section.sectionNumber == 3 and section.mapSnap %}
-			{% for mapSnap in mapSnaps %}
-				{% if mapSnap.id == section.mapSnap.id %}
-					<div class="row">
-						<h4>SECTION 3</h4>
-						<div id="map_3" class="map-opinion"></div>
-						<a href="/cashcity/mapsnaps/{{ mapSnap.id }}/">View Larger Map</a>
-						<br /><br />
-						<p>{{ section.text }}</p>
-						<hr />
-					</div>
-					<br />		
-					{% include 'CashCity/mapSnapOpinions.html' %}		
-				{% endif %}
-			{% endfor %}
-		{% elif section.sectionNumber == 3 and section.uploadImage %}
-			<div class="row">
-				<h4>SECTION 3</h4>
-				<img src="{% cropped_thumbnail section 'cropped_uploadImage_w640_h480' %}">
-				<br /><br />
-				<p>{{ section.text }}</p>
-				<hr />
-			</div>
-			<br />		
-		{% endif %}
-		
-		
-	<!-- Section 4 -->		
-		{% if section.sectionNumber == 4 and section.image %}
-			{% for image in mediaImages %}
-				{% if image.id == section.image.id %}
-					<div class="row">
-						<h4>SECTION 4</h4>
-						<img src="{% cropped_thumbnail image 'cropped_image_w640_h480' %}">
-						<br /><br />
-						<p>{{ section.text }}</p>
-						<hr />
-					</div>
-					<br />		
-				{% endif %}
-			{% endfor %}
-		{% elif section.sectionNumber == 4 and section.audio %}
-			{% for audio in mediaAudio %}
-				{% if audio.id == section.audio.id %}
-					<div class="row">
-						<h4>SECTION 4</h4>
-						{% if ".amr" in audio.audio.path %}
-							<audio src="/media/CashCity/{{ audio.audio }}.mp3" preload="auto" controls></audio>
-						{% else %}
-							<audio src="/media/CashCity/{{ audio.audio }}" preload="auto" controls></audio>
-						{% endif %}
-						<br /><br />
-						<p>{{ section.text }}</p>
-						<hr />
-					</div>
-					<br />		
-				{% endif %}
-			{% endfor %}
-		{% elif section.sectionNumber == 4 and section.note %}
-			{% for note in mediaNotes %}
-				{% if note.id == section.note.id %}
-					<div class="row">
-						<h4>SECTION 4</h4>
-						<p><i><strong>Notes: </strong>{{ note.notes }}</i></p>
-						<br /><br />
-						<p>{{ section.text }}</p>
-						<hr />
-					</div>
-					<br />		
-				{% endif %}
-			{% endfor %}
-		{% elif section.sectionNumber == 4 and section.interview %}
-			{% for interview in mediaInterviews %}
-				{% if interview.id == section.interview.id %}
-					<div class="row">
-						<h4>SECTION 4</h4>
-						<img src="{% cropped_thumbnail interview 'cropped_image_w640_h480' %}">
-						<br /><br />
-						{% if ".amr" in interview.audio.path %}
-							<audio src="/media/CashCity/{{ interview.audio }}.mp3" preload="auto" controls></audio>
-						{% else %}
-							<audio src="/media/CashCity/{{ interview.audio }}" preload="auto" controls></audio>
-						{% endif %}
-						<br /><br />
-						<p>{{ section.text }}</p>
-						<hr />
-					</div>
-					<br />		
-				{% endif %}
-			{% endfor %}
-		{% elif section.sectionNumber == 4 and section.mapSnap %}
-			{% for mapSnap in mapSnaps %}
-				{% if mapSnap.id == section.mapSnap.id %}
-					<div class="row">
-						<h4>SECTION 4</h4>
-						<div id="map_4" class="map-opinion"></div>
-						<a href="/cashcity/mapsnaps/{{ mapSnap.id }}/">View Larger Map</a>
-						<br /><br />
-						<p>{{ section.text }}</p>
-						<hr />
-					</div>
-					<br />		
-					{% include 'CashCity/mapSnapOpinions.html' %}		
-				{% endif %}
-			{% endfor %}
-		{% elif section.sectionNumber == 4 and section.uploadImage %}
-			<div class="row">
-				<h4>SECTION 4</h4>
-				<img src="{% cropped_thumbnail section 'cropped_uploadImage_w640_h480' %}">
-				<br /><br />
-				<p>{{ section.text }}</p>
-				<hr />
-			</div>
-			<br />		
-		{% endif %}
-
-	<!-- Section 5 -->		
-		{% if section.sectionNumber == 5 and section.image %}
-			{% for image in mediaImages %}
-				{% if image.id == section.image.id %}
-					<div class="row">
-						<h4>SECTION 5</h4>
-						<img src="{% cropped_thumbnail image 'cropped_image_w640_h480' %}">
-						<br /><br />
-						<p>{{ section.text }}</p>
-						<hr />
-					</div>
-					<br />		
-				{% endif %}
-			{% endfor %}
-		{% elif section.sectionNumber == 5 and section.audio %}
-			{% for audio in mediaAudio %}
-				{% if audio.id == section.audio.id %}
-					<div class="row">
-						<h4>SECTION 5</h4>
-						{% if ".amr" in audio.audio.path %}
-							<audio src="/media/CashCity/{{ audio.audio }}.mp3" preload="auto" controls></audio>
-						{% else %}
-							<audio src="/media/CashCity/{{ audio.audio }}" preload="auto" controls></audio>
-						{% endif %}
-						<br /><br />
-						<p>{{ section.text }}</p>
-						<hr />
-					</div>
-					<br />		
-				{% endif %}
-			{% endfor %}
-		{% elif section.sectionNumber == 5 and section.note %}
-			{% for note in mediaNotes %}
-				{% if note.id == section.note.id %}
-					<div class="row">
-						<h4>SECTION 5</h4>
-						<p><i><strong>Notes: </strong>{{ note.notes }}</i></p>
-						<br /><br />
-						<p>{{ section.text }}</p>
-						<hr />
-					</div>
-					<br />		
-				{% endif %}
-			{% endfor %}
-		{% elif section.sectionNumber == 5 and section.interview %}
-			{% for interview in mediaInterviews %}
-				{% if interview.id == section.interview.id %}
-					<div class="row">
-						<h4>SECTION 5</h4>
-						<img src="{% cropped_thumbnail interview 'cropped_image_w640_h480' %}">
-						<br /><br />
-						{% if ".amr" in interview.audio.path %}
-							<audio src="/media/CashCity/{{ interview.audio }}.mp3" preload="auto" controls></audio>
-						{% else %}
-							<audio src="/media/CashCity/{{ interview.audio }}" preload="auto" controls></audio>
-						{% endif %}
-						<br /><br />
-						<p>{{ section.text }}</p>
-						<hr />
-					</div>
-					<br />		
-				{% endif %}
-			{% endfor %}
-		{% elif section.sectionNumber == 5 and section.mapSnap %}
-			{% for mapSnap in mapSnaps %}
-				{% if mapSnap.id == section.mapSnap.id %}
-					<div class="row">
-						<h4>SECTION 5</h4>
-						<div id="map_5" class="map-opinion"></div>
-						<a href="/cashcity/mapsnaps/{{ mapSnap.id }}/">View Larger Map</a>
-						<br /><br />
-						<p>{{ section.text }}</p>
-						<hr />
-					</div>
-					<br />		
-					{% include 'CashCity/mapSnapOpinions.html' %}		
-				{% endif %}
-			{% endfor %}
-		{% elif section.sectionNumber == 5 and section.uploadImage %}
-			<div class="row">
-				<h4>SECTION 5</h4>
-				<img src="{% cropped_thumbnail section 'cropped_uploadImage_w640_h480' %}">
-				<br /><br />
-				<p>{{ section.text }}</p>
-				<hr />
-			</div>
-			<br />		
-		{% endif %}
-
-
+	
 			
 	{% endfor %}	
 	<br />
@@ -804,9 +500,9 @@
 			</div>
 		{% endif %}
 		{% if comment_form %}
-			<form role="form" method="post" action="/cashcity/opinion/{{ opinionObject.id }}/" >{% csrf_token %}
+			<form id="commentSubmit" role="form" method="post" action="/cashcity/opinion/{{ opinionObject.id }}/" >{% csrf_token %}
 				<div class="form-group">
-					<label for="comment">Add A Comment</label>{% if comment_form.comment.errors %} <span class="text-danger">{{ comment_form.comment.errors|join:", " }}</span>{% endif %}
+					<label for="comment">Add a Comment</label>{% if comment_form.comment.errors %} <span class="text-danger">{{ comment_form.comment.errors|join:", " }}</span>{% endif %}
 					{{ comment_form.comment|add_class:"form-control" }}
 				</div>
 				<button type="submit" class="btn btn-default" name="submit" value="submit">Submit</button>
@@ -822,9 +518,20 @@
 
 
 {% block js_block %}
+	<script type="text/javascript">
+	// don't allow blank comment fields
+	$('#commentSubmit').submit(function(ev) {
+		if (!$('#id_comment').val()) {
+			alert("Please add a comment.");
+			ev.preventDefault();
+		}
+	});
+	</script>
+	<script type="text/javascript" src="{% static 'CashCity/js/d3.min.js' %}"></script>
 	<script type="text/javascript" src="{% static 'CashCity/js/mapbox.js' %}"></script>
 	<script type="text/javascript" src="{% static 'CashCity/js/leaflet-omnivore.min.js' %}"></script>
 	<script type="text/javascript" src="{% static 'CashCity/js/topojson.js' %}"></script>
+	<script type="text/javascript" src="{% static 'CashCity/js/accounting.min.js' %}"></script>
 	<script type="text/javascript">
 	var neighborhoods = "{% static 'CashCity/topojson/neighborhoods.json' %}";	
 	var SubwayLines = "{% static 'CashCity/topojson/mta_subway_only_june2014.geojson' %}";	

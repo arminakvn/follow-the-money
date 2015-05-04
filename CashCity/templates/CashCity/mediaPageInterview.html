@@ -92,8 +92,9 @@
 
 
 {% block body_block %}
-<div class="half-container">
+<div  class="col-xs-10 col-xs-offset-1 col-sm-10 col-sm-offset-1 col-md-8 col-md-offset-2 col-lg-6 col-lg-offset-3 medium-container media-page">
 	<div class="row">
+		<h3>{{ mediaInterviewObject.title|title }}</h3>
 		{% if mediaInterviewObject.getUserProfile.color == None %}
 			<p><strong>Teacher Added</strong><span class="pull-right">{{ mediaInterviewObject.last_modified|date:"F j, Y" }}</span><br />Teacher: {{ mediaInterviewObject.getUserProfile.teacherName }}</p>
 		{% else %}
@@ -105,9 +106,9 @@
 		<hr />
 	</div>	
 	<div class="row">
-		<h3>{{ mediaInterviewObject.title|title }}</h3>
-		<img src="{% cropped_thumbnail mediaInterviewObject 'cropped_image_w640_h480' %}">		
-		{% if ".amr" in mediaInterviewObject.audio.path %}
+		
+		<img src="{% cropped_thumbnail mediaInterviewObject 'cropped_image_w640_h480' %}">
+		{% if ".amr" in mediaInterviewObject.audio.path or ".mov" in mediaInterviewObject.audio.path or ".MOV" in mediaInterviewObject.audio.path or ".gp3" in mediaInterviewObject.audio.path or ".mp4" in mediaInterviewObject.audio.path %}		
 			<audio src="/media/CashCity/{{ mediaInterviewObject.audio }}.mp3" preload="auto" controls style="margin: 10px 0px;"></audio>
 		{% else %}
 			<audio src="/media/CashCity/{{ mediaInterviewObject.audio }}" preload="auto" controls style="margin: 10px 0px;"></audio>
@@ -155,7 +156,7 @@
 			</div>
 		{% endif %}
 		{% if comment_form %}
-			<form role="form" method="post" action="/cashcity/media/interview/{{ mediaInterviewObject.id }}/" >{% csrf_token %}
+			<form id="commentSubmit" role="form" method="post" action="/cashcity/media/interview/{{ mediaInterviewObject.id }}/" >{% csrf_token %}
 				<div class="form-group">
 					<label for="comment">Add A Comment</label>{% if comment_form.comment.errors %} <span class="text-danger">{{ comment_form.comment.errors|join:", " }}</span>{% endif %}
 					{{ comment_form.comment|add_class:"form-control" }}
@@ -183,6 +184,14 @@
 			var iconUrl = "{% static image_static %}";
 		{% endwith %}
 	{% endif %}
+	// don't allow blank comment fields
+	$('#commentSubmit').submit(function(ev) {
+		if (!$('#id_comment').val()) {
+			alert("Please add a comment.");
+			ev.preventDefault();
+		}
+	});
+
 	</script>
 	<script type="text/javascript" src="{% static 'CashCity/js/mapbox.js' %}"></script>
 	<script type="text/javascript" src="{% static 'CashCity/js/media-map.js' %}"></script>

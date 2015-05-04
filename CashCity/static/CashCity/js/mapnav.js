@@ -10,7 +10,7 @@
  */
 
 $( document ).ready(function() {
-	
+
 	// ensure AFS location boxes are checked and the rest are unchecked
 	$('#All_AFS').prop('checked', true);
 	$('#LOC1').prop('checked', true);
@@ -20,6 +20,7 @@ $( document ).ready(function() {
 	$('#LOC5').prop('checked', false);
 	$('#LOC6').prop('checked', false);
 	$('#MEDIA').prop('checked', false);
+	$('#NYC_BORO').prop('checked', false);
 	
 
 	$("input[name='locations']").change( function() {
@@ -58,6 +59,11 @@ $( document ).ready(function() {
 				LOC7 = null;
 				LOC6 = null;
 			}
+			if(layerId == 'NYC_BORO' && NYC_BORO != null) {
+				CityDigitsMap.removeLayerFor(NYC_BORO);
+				NYC_BORO = null;
+			}
+
 	    }
 		
 		// add all three layers (pawn shops, check cashing and wire transfer) when AFS is checked
@@ -176,9 +182,8 @@ $( document ).ready(function() {
 		$('#MAP3').prop('checked', false);
 		$('#MAP4').prop('checked', false);			
 		
-		
 	    switch (value) {
-	    case 'Variable1':
+	    case 'Variable 1':
 			$("#var2Select").html("<option value='Variable 2' class='grey'>Variable 2</option>");
 			$("#var2Select").selectpicker('refresh');
 			$("#normalizationText").html('');
@@ -299,6 +304,8 @@ $( document ).ready(function() {
 	// draw chart based on layer selected
 	$('#chart').click(function() {
 		if (mainLayer != null) {
+			// close the accordion menu
+			$('.panel-collapse').removeClass('in');
 			// get id of layer selected
 			var layerId = mainLayer._leaflet_id;
 			if (!mainChart) {
@@ -348,7 +355,26 @@ $( document ).ready(function() {
 	onChangeListener();	
 	
 	// add event listeners to run functions on change
-	function onChangeListener() {	
+	function onChangeListener() {
+		$( ".form-control-feedback-media" ).click(function() {
+		    //get search values
+			var tags = $("#tags").val();
+			//remove media layers if they exist on the map 
+			if (MY_MAP.map.hasLayer(clusterMedia) == true) {
+				CityDigitsMap.removeMediaLayers();
+			}
+			// clear data out of media layers
+			CityDigitsMap.clearMediaLayers();
+			
+		    loadMediaImage(tags);
+		    loadMediaAudio(tags);
+		    loadMediaNote(tags);
+		    loadMediaInterview(tags);
+			
+			// load media layers after data has been replaced
+			CityDigitsMap.loadMediaLayers();			
+		});
+
 		$( ".ui-autocomplete-input" ).keydown(function(e) {
 			console.log(e.which);
 		    var code = e.which;

@@ -61,6 +61,14 @@
 
 {% if mediaResults %}
 <table class="table">
+	<thead>
+		<th>Section</th>
+		<th>Team Color</th>
+		<th>Media</th>
+		<th>Name</th>
+		<th>Date Added</th>
+		<th>Options</th>
+	</thead>
 	<tbody>
 		{% for mediaResult in mediaResults %}
 			{% if mediaResult.image and mediaResult.audio %}
@@ -82,7 +90,7 @@
 							</a>
 						{% endif %}
 				            <div style="margin: auto;">
-								{% if ".amr" in mediaResult.audio.path %}
+								{% if ".amr" in mediaResult.audio.path or ".mov" in mediaResult.audio.path or ".MOV" in mediaResult.audio.path or ".gp3" in mediaResult.audio.path or ".mp4" in mediaResult.audio.path %}
 					            	<audio src="/media/CashCity/{{ mediaResult.audio }}.mp3" preload="auto" controls></audio>
 								{% else %}
 					            	<audio src="/media/CashCity/{{ mediaResult.audio }}" preload="auto" controls></audio>
@@ -162,7 +170,7 @@
 					<td><div class="audio_{{ mediaResult.getUserProfile.color }} pull-left margin-right"></div></td>
 					<td>
 				            <div style="margin: auto;">
-								{% if ".amr" in mediaResult.audio.path %}
+								{% if ".amr" in mediaResult.audio.path or ".mov" in mediaResult.audio.path or ".MOV" in mediaResult.audio.path or ".gp3" in mediaResult.audio.path or ".mp4" in mediaResult.audio.path %}
 					            	<audio src="/media/CashCity/{{ mediaResult.audio }}.mp3" preload="auto" controls></audio>
 								{% else %}
 					            	<audio src="/media/CashCity/{{ mediaResult.audio }}" preload="auto" controls></audio>
