@@ -1,0 +1,979 @@
+
+/*
+*  Bootstrap Overrides
+*/
+
+body {
+    background-color: #E5E5E5;
+}
+
+.map-container {
+    width: 95%;
+}
+
+.loginFormcontainer {
+    width: 50%;
+	margin-top: 100px;
+}
+
+.midPageFormcontainer {
+    width: 60%;
+	margin-top: 100px;
+}
+
+.TeacherRegistrationcontainer {
+    width: 50%;
+	margin-top: 100px;
+}
+
+.half-container {
+    width: 50%;
+	margin-top: 100px;
+	margin-bottom: 4%;
+	margin-left: auto;
+	margin-right: auto;
+}
+
+.full-container {
+    width: 85%;
+	margin-top: 100px;
+	margin-bottom: 4%;
+	margin-left: auto;
+	margin-right: auto;
+}
+
+.stubs-container {
+    width: 95%;
+	margin-top: 100px;
+	margin-bottom: 4%;
+	margin-left: auto;
+	margin-right: auto;
+}
+
+/*.enormous {
+	font-size: 200px;
+}
+
+.lessenormous {
+	font-size: 170px;
+}*/
+
+hr {
+	margin-bottom: 10px;
+	margin-top: 10px;	
+}
+	
+.navbar-default {
+	background-color: #fff;
+}
+
+.navbar-default .navbar-nav > .active > a,
+.navbar-default .navbar-nav > .active > a:hover,
+.navbar-default .navbar-nav > .active > a:focus {
+	color: #025ff1;
+	background-color: #ffffff;
+}
+
+.navbar-default .navbar-brand {
+	font-size: 24px;
+	color: #025ff1;
+	float: none;
+}
+
+.navbar > .container .navbar-brand, .navbar > .container-fluid .navbar-brand {
+    margin-left: 0px;
+}
+
+.navbar-default .navbar-center {
+	position: absolute;
+	width: 100%;
+	left: 0px;
+	top: 0;
+	margin-left: 0px !important;
+	text-align: center;
+	margin: auto;
+	height:100%;
+}
+
+.navbar-brand {
+	padding: 15px 5px;
+}
+
+.showMobile {
+	display: none !important;
+}
+
+.navbar-fixed-top .navbar-collapse, .navbar-fixed-bottom .navbar-collapse {
+  max-height: 1000px;
+}
+
+@media (max-width: 768px) {
+
+	.map-ui, .citydigits-charts, .citydigits-legend, .media-button, .citydigits-navbar-right, .nav-tabs-media {
+		display: none;
+	}
+
+	.half-container, .loginFormcontainer, .midPageFormcontainer, .TeacherRegistrationcontainer {
+		width: 85%;
+	}
+
+	.showMobile {
+		display: block !important;
+	}
+
+	.navbar-default .navbar-center {
+		text-align: left;
+		z-index: -1;
+    padding-left:10px;
+	}
+
+}
+
+
+.navbar-default .navbar-center .brand-fade {
+    font-weight: 200;
+    color: #00c9c8;
+}
+
+.user-text {
+	margin-top: 15px;
+	margin-right: 100px;			
+}
+
+.panel-heading {
+	background-color: #025ff1 !important;
+	border-top-left-radius: 0px;
+	border-top-right-radius: 0px;
+}
+
+a:hover > .panel-heading {
+	background-color: #fff !important;
+}
+
+a > .panel-heading > .panel-title {
+	color: #fff;
+	border-radius: 0px;
+	padding: 0px 5px;
+	text-decoration: none;
+}
+
+a:hover > .panel-heading > .panel-title {
+	color: #333;
+	border-radius: 0px;
+	text-decoration: none;
+}
+
+.panel {
+	border: 0px;
+}
+
+.panel-group {
+  margin-bottom: 0px;
+}
+
+.panel-group .panel+.panel {
+	margin-top: 0px;
+}
+
+
+.nav-mapui-width {
+	width: 250px;
+}
+
+.indent {
+	margin-left: 15px;
+}
+
+
+.nav-tabs.nav-tabs-media {
+	margin-bottom: 20px;
+}
+
+.nav-tabs.nav-tabs-media > li {
+	background-color: whitesmoke;
+}
+
+.nav-tabs.nav-tabs-media > li > a {
+	color: #333;
+	border-radius: 0px;
+	padding: 10px 5px;
+	border-bottom: 0px;
+}
+
+.nav-tabs.nav-tabs-media > li > a:hover,
+.nav-tabs.nav-tabs-media > li > a:focus {
+	background-color: #B0B6BD;
+	color: #333;
+	border-radius: 0px;
+	border: 1px solid #B0B6BD;
+	border-bottom: 1px solid #9C9C9C;
+}
+
+.nav-tabs.nav-tabs-media > .active > a,
+.nav-tabs.nav-tabs-media > .active > a:hover,
+.nav-tabs.nav-tabs-media > .active > a:focus {
+	background-color: #B0B6BD;
+	color: #333;
+	border-radius: 0px;
+	border: 1px solid #B0B6BD;
+	border-bottom: 1px solid #9C9C9C;
+}
+
+
+
+.marginright {
+	margin-right: 3px;
+	margin-top: 3px;
+}
+
+.padding10 {
+	padding: 10px;
+}
+
+.padding10bottom {
+	padding-bottom: 10px;
+}
+
+.padding10top {
+	padding-top: 10px;
+}
+
+.grey {
+	color: #9c9c9c !important;
+}
+
+.darkgrey {
+	color: #4d4d4d;
+}
+
+.lowFontWeight {
+	font-weight: 400;
+}
+
+.divide {
+	border-color: #9c9c9c;
+	margin: 5px;
+	border-width: 2px 0 0;
+}
+
+/*
+* boostrap-select button overrides
+*/
+
+.bootstrap-select > .btn {
+	background: none;
+}
+
+
+
+/*
+* Setting form option colors
+*/
+
+.margin-right {
+	margin-right: 4px;
+}
+
+.white {
+    background: #fff;
+	border-radius: 4px;
+}
+
+.green {
+    background: #2eff5a;
+}
+
+.orange {
+    background: #ff6c00;
+}
+
+.pink {
+    background: #ff0764;
+}
+
+.purple {
+    background: #b001ea;
+}
+
+.red {
+    background: #ff2400;
+}
+
+.yellow {
+    background: #f3b202;
+}
+
+.green-icon {
+    color: #2eff5a;
+}
+
+.orange-icon {
+    color: #ff6c00;
+}
+
+.pink-icon {
+    color: #ff0764;
+}
+
+.purple-icon {
+    color: #b001ea;
+}
+
+.red-icon {
+    color: #ff2400;
+}
+
+.yellow-icon {
+    color: #f3b202;
+}
+
+
+/*
+* Bootstrap file input button
+*/
+
+.btn-file {
+	position: relative;
+	overflow: hidden;
+}
+
+.btn-file input[type=file] {
+	position: absolute;
+	top: 0;
+	right: 0;
+	min-width: 100%;
+	min-height: 100%;
+	font-size: 100px;
+	text-align: right;
+	filter: alpha(opacity=0);
+	opacity: 0;
+	outline: none;
+	background: white;
+	cursor: inherit;
+	display: block;
+}
+
+/*
+* Form Map styles
+*/
+
+#formMap {
+    width:100%;
+    height:200px;
+}
+
+
+
+/*
+* Map styles
+*/
+
+#map {
+    position:absolute;
+    left:0;
+    right:0;
+    top:0;
+    bottom:0;
+    width:100%;
+    margin-top: 50px;
+	overflow: hidden;
+}
+
+.map-ui {
+    position: absolute;
+    left: 10px;
+    top: 60px;
+    width: 250px;
+    margin: 0;
+    padding: 0;
+    z-index: 100;
+    background: #fff;
+    box-shadow: 5px 5px 15px;
+}
+
+.citydigits-zoomer {
+    position: absolute;
+    z-index: 110;
+    top: 59px;
+    right: 7px;
+}
+
+.citydigits-charts {
+    position: absolute;
+    z-index: 110;
+    bottom: 10px;
+    left: 10px;
+}
+
+.citydigits-legend {
+    position: absolute;
+    z-index: 110;
+    bottom: 10px;
+    right: 5px;
+}
+
+.rollover-tooltip {
+    text-align: center;
+    font-family: "Apercu Regular", Calibri, sans-serif; font-size-adjust:0.508; font-weight:normal; font-style:normal;
+    color: #fff;
+    font-size: 13px;
+}
+
+.map-popup {
+    text-align: center;
+    font-family: "Apercu Regular", Calibri, sans-serif; font-size-adjust:0.508; font-weight:normal; font-style:normal;
+    color: #fff;
+}
+
+.map-popup h4 {
+	font-size: 20px;
+}
+
+.map-popup p {
+	font-size: 14px;
+}
+
+
+/*
+* Leaflet overrides
+*/
+
+.leaflet-popup-content-wrapper, .map-legends, .map-tooltip {
+	background: none repeat scroll 0 0 #3f3f3f;
+}
+	
+.leaflet-popup-content {
+	background-color:#3f3f3f;
+	color:#fff;
+}
+
+.leaflet-popup-tip {
+	border-top: 10px solid #3f3f3f;
+}
+
+.leaflet-top {
+	top: 35px;
+}
+
+/*
+* Media map search box css
+*/
+
+.toggle-media-button {
+	margin: 0px 10px 10px 10px;
+	width: 200px;
+	height: 100px;
+	float:left;
+	display: inline-block;
+}
+
+.map-tag-search-box {
+	width: 220px;
+}
+
+.tagit {
+	margin-bottom: 2px;
+}
+
+/* boostrap override in the media tag search box */
+.form-control-feedback-media {
+    display: block;
+    height: 34px;
+    line-height: 34px;
+    position: absolute;
+    right: 10px;
+    text-align: center;
+    top: 0px;
+    z-index: 2;
+    cursor: pointer;
+}
+
+
+/*
+* Map search box form css
+*/
+
+.leaflet-control-geosearch {
+	width: 100%;
+	margin: 0px;
+}
+
+
+/*
+* bar chart css
+*/
+
+.citydigits-charts .chartDiv {
+	width: 500px;
+	height: 300px;
+	background: none repeat scroll 0 0 #fff;
+	box-shadow: 5px 5px 15px;
+}
+
+.citydigits-charts .chartDiv.opinion {
+	width: 300px;
+	height: 200px;
+}
+
+.citydigits-charts .chartDiv > a {
+	text-decoration: none;
+}
+
+.bar {
+  fill: #62def8;
+}
+
+.bar:hover {
+  fill: #9c9c9c;
+}
+
+.pinkbar {
+	fill: rgb(181,119,155);
+}
+
+.pinkbarlegend {
+	fill: rgb(181,119,155);
+}
+
+.brightpinkbar {
+	fill: rgb(241,255,0);
+	/*fill:#ffff99;*/
+}
+
+
+.axis {
+  font-family: "Apercu Regular", Calibri, sans-serif; font-size-adjust:0.508; font-weight:normal; font-style:normal;
+  font-size: 9pt;
+}
+
+.axis path,
+.axis line {
+  fill: none;
+  stroke: #A7A8A7;
+  shape-rendering: crispEdges;
+}
+
+.chartTitle {
+    font-family: "Apercu Regular", Calibri, sans-serif; font-size-adjust:0.508; font-weight:normal; font-style:normal;
+    font-size: 14pt;	
+}
+
+
+/*
+ * barchartTooltip styling
+ */
+
+.barchartTooltip { 
+    position: absolute;
+    text-align: left;
+    width: 230px;
+    height: auto;
+    padding: 8px;
+    color: #6D6E70;
+    background: #fff;
+    font-weight: 400;
+    border: solid 2px #ccc;
+    border-radius: 4px;
+    pointer-events: none;
+	z-index: 1031;
+} 
+
+.barchartTooltip:after, .barchartTooltip:before { 
+	right: 100%; 
+	top: 50%; 
+	border: solid transparent; 
+	content: " "; 
+	height: 0; 
+	width: 0; 
+	position: absolute; 
+	pointer-events: none; 
+} 
+
+.barchartTooltip:after { 
+	border-color: rgba(255, 255, 255, 0); 
+	border-right-color: #fff; 
+	border-width: 15px; 
+	margin-top: -15px; 
+} 
+
+.barchartTooltip:before { 
+	border-color: rgba(109, 110, 112, 0); 
+	border-right-color: #ccc; 
+	border-width: 18px; 
+	margin-top: -18px; 
+}
+
+
+/*
+ * Media/opinion stubs and filter boxes
+ */
+
+.media-stub {
+    display: inline-block;
+	padding: 10px;
+    /*width: 300px;*/
+    /*height: 400px;*/
+    /*background-color: #ffffff;*/
+    border-radius: 5px;
+    margin-top: 3%;
+    margin-right: 2%;
+}
+
+audio {
+	width: 280px; 
+}
+
+.filter-container {
+	display: inline-block;
+	margin: 10px 0px 10px 0px;
+}
+
+.noDecoration {
+	text-decoration: none;
+	color: #4d4d4d;
+}
+
+/*
+* Media Map styles
+*/
+
+#mediaMap {
+	margin-top: 20px;
+	margin-bottom: 20px;
+    width:640px;
+    height:200px;
+}
+
+/*
+* Map snaps div
+*/
+
+#mapSnaps {
+	width: 100%;
+	top: 50px;
+    background-color: #dcdce4;
+    border-bottom: 1px solid #ccc;
+    display: none;
+    font-weight: 300;
+    padding: 20px 28px 0px;
+    position: absolute;
+    z-index: 1001;
+}
+
+.map-thumbnail {
+	margin: 0px 20px 20px 0px;
+    border: 1px solid #ccc;
+	width: 160px;
+	height: 120px;
+	float:left;
+	display: inline-block;
+}
+
+.mapSnapTitle {
+	display: inline-block;
+	position: absolute;
+	z-index: 1000;
+	bottom: 0;
+    width: 160px;
+    height: auto;
+    padding: 0 5px;
+	background-color: rgba(255,255,255,0.75);
+}
+
+.mapSnapTitleText {
+	margin: 0 !important;
+}
+
+
+/*
+* loading screen modals
+*/
+
+body.loading {
+    overflow: hidden;   
+}
+
+body.loading .loading-modal {
+    display: block;
+}
+
+/*
+* opinion form css
+*/
+
+.greyBackground {
+	background-color: whitesmoke;
+	margin: -10px;
+	padding: 10px;
+}
+
+.opinion-form-button {
+	width: 33%;
+	height: 100px;
+}
+
+.opinionPreviewMap {
+	margin-bottom: 20px;
+    width:200px;
+    height:150px;
+}
+
+.moveSection {
+	cursor: move;
+	padding-right: 5px;
+}
+
+.upload-button-rounding {
+	width: 100%;
+	height: 100px;
+	border-top-right-radius: 6px !important;
+	border-bottom-right-radius: 6px !important;
+}
+
+
+.nav-tabs.nav-tabs-media-modal {
+	margin-bottom: 20px;
+}
+
+.nav-tabs.nav-tabs-media-modal > li {
+	background-color: #fff;
+}
+
+.nav-tabs.nav-tabs-media-modal > li > a {
+	color: #333;
+	border-radius: 0px;
+	padding: 10px 5px;
+	border-bottom: 0px;
+}
+
+.nav-tabs.nav-tabs-media-modal > li > a:hover,
+.nav-tabs.nav-tabs-media-modal > li > a:focus {
+	background-color: #fff;
+	color: #333;
+	border-radius: 0px;
+	border: 1px solid #fff;
+	border-bottom: 1px solid #9C9C9C;
+}
+
+.nav-tabs.nav-tabs-media-modal > .active > a,
+.nav-tabs.nav-tabs-media-modal > .active > a:hover,
+.nav-tabs.nav-tabs-media-modal > .active > a:focus {
+	background-color: #fff;
+	color: #333;
+	border-radius: 0px;
+	border: 1px solid #fff;
+	border-bottom: 1px solid #9C9C9C;
+}
+
+
+
+/*
+* maps on opinion page css
+*/
+
+.map-opinion {
+  	border: 1px solid #ccc;
+	width: 100%;
+	height: 480px;
+}
+
+.pointer {
+	cursor: pointer;
+}
+
+
+/*PIERRE CSS*/
+
+.section_subtitle {
+  text-align:center;
+  font-style: italic;
+  padding:0px 20px;
+}
+
+.section_header {
+  font-size:30px;
+  font-weight:300;
+  margin-top:0px;
+}
+
+.media_search_header {
+  background-color: whitesmoke;
+  /*height: 56px;*/
+}
+
+.bootstrap-select:not([class*=col-]):not([class*=form-control]):not(.input-group-btn) {
+  width: 100%;
+}
+
+li.tagit-new {
+  padding: 3px 4px 2px 0;
+}
+
+.media-stub {
+  display: inline-block;
+  padding: 10px;
+  background-color: none; 
+  border-radius: 5px;
+  margin-top: 3%;
+  margin-right: 0%; 
+/*  height:380px;
+  max-height:415px;
+  overflow-y:hidden;*/
+}
+
+.media-stub img, .media-stub audio {
+  width:100%;
+}
+
+.inner-media-stub {
+  width:100%;
+  background-color:white;
+  padding:10px;
+  height:90%;
+}
+
+.form-control-feedback {
+  top:0px;
+}
+
+.medium-container {
+  background-color: whitesmoke;
+  margin-top:90px;
+  margin-bottom:90px;
+  padding:10px 20px;
+}
+
+.opinion-container {
+  background-color: whitesmoke;
+  margin-top:90px;
+  margin-bottom:90px;
+  padding:20px 15px;
+}
+
+.opinion-container h3 {
+  font-size:30px;
+  font-weight:300;
+  margin-top:0px;
+  text-align: center;
+}
+
+.opinion-container .row {
+  margin:0px
+}
+
+.opinion-container img {
+  width:100%;
+}
+
+.profile-menu-buttons {
+  padding:10px;
+}
+
+.about-page h1 {
+  font-size: 28px;
+  margin-top: 25px;
+  margin-bottom: 18px;
+  text-align: left;
+  font-weight: 300;
+}
+
+.about-page h2 {
+  font-size: 20px;
+  margin-top: 25px;
+  margin-bottom: 18px;
+  text-align: left;
+  font-weight: 300;
+}
+.about-page p {
+  text-align: left;
+}
+
+.about-page li {
+  text-align: left;
+}
+
+.media-page {
+  padding:10px 20px;
+}
+
+.media-page .row {
+  margin:0px;
+}
+
+.media-page img, .media-page audio, .media-page #mediaMap {
+  width:100%;
+}
+
+.media-page h3 {
+  font-size:30px;
+  font-weight:300;
+  /*text-align: center;*/
+}
+
+.citydigits-font {
+  font-family:"Apercu Bold", Helvetica, Arial, sans-serif; font-size-adjust:0.508; font-weight:bold; font-style:normal;
+}
+
+.account-menu {
+  background-color: #B0B6BD;
+  /*height: 56px;*/
+}
+
+.media-table-custom img {
+  width:100%;
+}
+
+.row-no-margin {
+  margin:0px;
+}
+
+.account-header {
+  font-weight:300;
+}
+
+#sectionmapsnaps_1 .modal-body {
+  padding: 15px 55px;
+  overflow-y: auto;
+  height: 315px;
+}
+
+#sectionmapsnaps_1 .modal-body .map-thumbnail {
+  margin: 0px 10px 20px 0px;
+  border: 1px solid #ccc;
+  width: 150px;
+  height: 120px;
+  float: left;
+  display: inline-block;
+}
+
+.media-stub h4 {
+  height:19px;
+  overflow-y:hidden;
+}
+
+/*
+* ensure that active selections show up
+*/
+
+
+.imageSelect {
+	display: inline-block;
+	height: 128px; 
+	width: 168px; 
+	margin: 8px;
+	overflow: hidden;
+	cursor: pointer;
+}
+
+.imageSelect.active {
+	border: 4px solid steelblue !important;
+}
+
+.mediaSelect {
+	cursor: pointer;
+}
+
+.mediaSelect.active {
+	border: 4px solid steelblue !important;
+}
+
